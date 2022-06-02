@@ -8,12 +8,15 @@ Last Update  :    June 1, 2022
 import numpy as np
 import pandas as pd
 import random
-import three_variable_acs as tv
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete.CPD import TabularCPD
+from pgmpy.inference.ExactInference import VariableElimination
+from cpdmaker import make_cpd
 
 
 df = pd.read_csv('ACS_modified.csv')
 
-environment_variables = [elem.variable for elem in tv.bn.get_cpds()]
+#environment_variables = [elem.variable for elem in tv.bn.get_cpds()]
 
 
 '''  Given a variable this function returns a dictionary mapping every state
@@ -32,18 +35,11 @@ def state_mapping(data_frame, variable):
 
 
 def environment_map(universe):
-    print('hello.')
     return {variable: state_mapping(df, variable) for variable in universe}
-
-
-print(environment_map(environment_variables))
-
-exit()
 
 
 SIZE_OF_DATA = len(df)
 K = 10
-
 index = list(range(len(df)))
 random_sample = df.iloc[np.array(random.sample(index, SIZE_OF_DATA))]
 sample_index = random_sample.index
@@ -62,15 +58,35 @@ for i in range(n):
     test_group_indexes[i] = np.append(test_group_indexes[i], (remaining_indices[i]))
 
 '''
-In this for loop we get a list of the training group indexes by removing the 
+We get a list of the training group indexes by removing the 
 indexes associated with the ith testing group from the list of indices of
 the full data set
 '''
 # train_group_indexes is an array of length k which contains the index for each training group
 train_group_indexes = [sample_index.drop(test_group_indexes[i]) for i in range(K)]
 training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
-t_g_processed = [training_groups[i].groupby('DenominationalGroup').mean() for i in range(K)]
 
+''' 
+for each training group we have to train a new BN.  Then we will query that BN for each member
+of the associated testing group and compare its max likelihood prediction against the true value.
+'''
+#  We train each BN inside a for loop and then store each in a list called 'bayesian_networks'
+bayesian_networks = []
+for i in range(K):
+    bn = BayesianNetwork([('DenominationalGroup', 'Deactivated'), ('Deactivated', 'CongregantUsers')])
+
+    #  We need to do this but generally
+    denominational_group = TabularCPD('DenominationalGroup', 18,
+                                      values=make_cpd(training_groups[i], 'DenominationalGroup'))
+
+    deactivated_cpd = TabularCPD('Deactivated', 2, values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
+                                 evidence=['DenominationalGroup'], evidence_card=[18])
+
+    congregant_users_cpd = TabularCPD('CongregantUsers', 4,
+                                      values=make_cpd(training_groups[i], 'CongregantUsers', 'Deactivated'),
+                                      evidence=['Deactivated'], evidence_card=[2])
+    bayesian_networks.append(bn)
+print(bayesian_networks)
 
 def max_likelihood(x):
     """  We input 'x', the probability of a boolean event, and the output

@@ -39,27 +39,30 @@ def make_cpd(data_frame, target, *givens):
     --------------------------------------------------------------------------------------
    
    """
+    if givens != ():
 
-    all_variables = list(givens) + [target]
-    df = data_frame[all_variables]
-    grouped = df.groupby(list(givens))
-    vc = grouped[target].value_counts().unstack(fill_value=0).stack()  # vc is abbreviation for 'value_counts'
-    c = grouped[target].count()  # c is short for 'count'
-    # The line below returns the total number of states for each 'given' variable.  We need these numbers 
-    # in order to calculate the correct shape for the array that we want to output.
-    variable_states = [len(df[elem].unique()) for elem in givens]
-    # total_states_of_givens is the product of the number of states of all the 'given' variables in the space
-    # that the table is concerned with.
-    total_states_of_givens = reduce(lambda x, y: x * y, variable_states)
-    # unprocessed_cpd is the conditional probability distribution as a flat list.  We need to process
-    # it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
-    unprocessed_cpd = (vc / c).values
-    # for num_states in variable_states:
-    return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
+        all_variables = list(givens) + [target]
+        df = data_frame[all_variables]
+        grouped = df.groupby(list(givens))
+        vc = grouped[target].value_counts().unstack(fill_value=0).stack()  # vc is abbreviation for 'value_counts'
+        c = grouped[target].count()  # c is short for 'count'
+        # The line below returns the total number of states for each 'given' variable.  We need these numbers
+        # in order to calculate the correct shape for the array that we want to output.
+        variable_states = [len(df[elem].unique()) for elem in givens]
+        # total_states_of_givens is the product of the number of states of all the 'given' variables in the space
+        # that the table is concerned with.
+        total_states_of_givens = reduce(lambda x, y: x * y, variable_states)
+        # unprocessed_cpd is the conditional probability distribution as a flat list.  We need to process
+        # it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
+        unprocessed_cpd = (vc / c).values
+        # for num_states in variable_states:
+        return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
 
+    else:
+        return np.expand_dims((data_frame[target].value_counts() / data_frame[target].count()), axis=1)
 
 #  Example ___________________________________________________________________
 
 #df = pd.read_csv('ACS_modified.csv')
-#my_cpd = make_cpd(df, 'Deactivated', 'DenominationalGroup')
+#my_cpd = make_cpd(df, 'DenominationalGroup')
 #print(my_cpd)
