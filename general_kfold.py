@@ -13,34 +13,30 @@ from pgmpy.factors.discrete.CPD import TabularCPD
 from pgmpy.inference.ExactInference import VariableElimination
 from cpdmaker import make_cpd
 
-TARGET_VARIABLE = 'Deactivated'
+random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
-
-'''  Given a variable this function returns a dictionary mapping every state
-     of the variable to the integer that corresponds to its index in the CPT.
-'''
+K = 10
+SIZE_OF_DATA = len(df)
+TARGET_VARIABLE = 'Deactivated'
 
 
 def state_mapping(data_frame, variable):
+    """
+        Given a variable this function returns a dictionary mapping every state
+         of the variable to the integer that corresponds to its index in the CPT.
+    """
     return dict([(b, a) for a, b in enumerate(sorted(data_frame[variable].unique()))])
 
 
-'''  Pass in the list of all environment variables as 'universe'.  The returned object
-     is a nested dictionary mapping each environment variable which maps its respective
-     state variables to their indexes in the appropriate CPT.
-'''
-
-
 def environment_map(universe):
+    """ _________________________________________________________________________________________
+         Pass in the list of all environment variables as 'universe'.  The returned object
+         is a nested dictionary mapping each environment variable which maps its respective
+         state variables to their indexes in the appropriate CPT.
+         ________________________________________________________________________________________"""
     return {variable: state_mapping(df, variable) for variable in universe}
 
 
-def evidence_map():
-    return None
-
-
-SIZE_OF_DATA = len(df)
-K = 10
 index = list(range(len(df)))
 random_sample = df.iloc[np.array(random.sample(index, SIZE_OF_DATA))]
 sample_index = random_sample.index
@@ -96,35 +92,19 @@ Now we have to create a VariableElimination object from each BayesianNetwork obj
 to do inference (we need to run queries).
 '''
 
-inferences = [VariableElimination(bn) for bn in bayesian_networks]
-
-'''  We may or may not want to use this function later.  Not sure yet.  '''
-
-
-def max_likelihood(x):
-    """  We input 'x', the probability of a boolean event, and the output
-         is whether the event is more likely than not to occur.
-    """
-    return x > 0.5
-
-
 test_groups = [df.iloc[test_group_indexes[i]] for i in range(K)]
-# print(test_groups[0].iloc[0:2, ])
-# exit()
 test_group_sizes = np.array([elem.size for elem in test_group_indexes])
 train_group_sizes = np.array([elem.size for elem in train_group_indexes])
 
 '''
 Importantly, we can not assume that every item in our testing group has been accounted for in the
 training group e.g. 'AME Zion' might be in a testing group when there were no instances of this 
-denomination in the training group so we cannot make a prediction in regard to it.  Therefore, 
-one of the first things we need to do is iterate through every ith testing group and drop all 
-rows which do not have a corresponding key in the ith dictionary of 'predictions.'
+denomination in the training group so we cannot make a prediction in regard to it (probably?).
 '''
 
+inferences = [VariableElimination(bn) for bn in bayesian_networks]
 environment_variables = [variable for variable in bayesian_networks[0]]
 environment_variables.remove(TARGET_VARIABLE)
-print(environment_variables)
 env_map = environment_map(environment_variables)
 validations = []
 for i in range(K):
@@ -133,10 +113,12 @@ for i in range(K):
         state_variables = test_groups[i].iloc[j][environment_variables]
         true_value_target = test_groups[i].iloc[j][TARGET_VARIABLE]
         inference = inferences[i].query([TARGET_VARIABLE],
-                                        {v: env_map[v][sv] for v, sv in zip(environment_variables, state_variables)})
+                                        {v: env_map[v][sv] for v, sv in zip(environment_variables, state_variables)},
+                                        show_progress=False)
         validation.append((inference.values[0] < .5) == true_value_target)
     validations.append(np.array(validation))
 
-
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
-print(np.sum(group_prediction_accuracies) / K)
+
+total_accuracy = np.sum(group_prediction_accuracies) / K
+print(f'Prediction Accuracy : {total_accuracy}')
