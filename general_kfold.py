@@ -13,11 +13,8 @@ from pgmpy.factors.discrete.CPD import TabularCPD
 from pgmpy.inference.ExactInference import VariableElimination
 from cpdmaker import make_cpd
 
-
+TARGET_VARIABLE = 'Deactivated'
 df = pd.read_csv('ACS_modified.csv')
-
-#environment_variables = [elem.variable for elem in tv.bn.get_cpds()]
-
 
 '''  Given a variable this function returns a dictionary mapping every state
      of the variable to the integer that corresponds to its index in the CPT.
@@ -36,6 +33,10 @@ def state_mapping(data_frame, variable):
 
 def environment_map(universe):
     return {variable: state_mapping(df, variable) for variable in universe}
+
+
+def evidence_map():
+    return None
 
 
 SIZE_OF_DATA = len(df)
@@ -79,14 +80,26 @@ for i in range(K):
     denominational_group = TabularCPD('DenominationalGroup', 18,
                                       values=make_cpd(training_groups[i], 'DenominationalGroup'))
 
-    deactivated_cpd = TabularCPD('Deactivated', 2, values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
+    deactivated_cpd = TabularCPD('Deactivated', 2,
+                                 values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
                                  evidence=['DenominationalGroup'], evidence_card=[18])
 
     congregant_users_cpd = TabularCPD('CongregantUsers', 4,
                                       values=make_cpd(training_groups[i], 'CongregantUsers', 'Deactivated'),
                                       evidence=['Deactivated'], evidence_card=[2])
+
+    bn.add_cpds(denominational_group, deactivated_cpd, congregant_users_cpd)
     bayesian_networks.append(bn)
-print(bayesian_networks)
+
+'''
+Now we have to create a VariableElimination object from each BayesianNetwork object in order
+to do inference (we need to run queries).
+'''
+
+inferences = [VariableElimination(bn) for bn in bayesian_networks]
+
+'''  We may or may not want to use this function later.  Not sure yet.  '''
+
 
 def max_likelihood(x):
     """  We input 'x', the probability of a boolean event, and the output
@@ -95,34 +108,13 @@ def max_likelihood(x):
     return x > 0.5
 
 
-def training_predictions(assign, training):
-    """
-                    FUNCTION INPUTS training_predictions()
-    ------------------------------------------------------------------------------
-
-      assign   - a function which maps a training value to a prediction
-
-      training - a DataFrame object whose index is a 'condition' and whose
-                 values are the probability of the event of interest given
-                 the corresponding condition in index.
-    ------------------------------------------------------------------------------
-    """
-    return [dict(zip(training[i].index, list(map(assign, training[i].values)))) for i in range(K)]
-
-
-'''
-The ith element of training_predictions is a dictionary corresponding to the ith training group which 
-maps the name of each denomination to our prediction as to whether the church will deactivate or 
-not given the denomination.
-'''
-predictions = training_predictions(max_likelihood, t_g_processed)
 test_groups = [df.iloc[test_group_indexes[i]] for i in range(K)]
+# print(test_groups[0].iloc[0:2, ])
+# exit()
+test_group_sizes = np.array([elem.size for elem in test_group_indexes])
+train_group_sizes = np.array([elem.size for elem in train_group_indexes])
 
 '''
-For each ith test group, we need to pass the index (DenominationalGroup) to the ith dictionary in 
-'predictions' and check whether predictions maps to the same boolean value as actually corresponds
-with this entry in the the table for 'Deactivated'
-
 Importantly, we can not assume that every item in our testing group has been accounted for in the
 training group e.g. 'AME Zion' might be in a testing group when there were no instances of this 
 denomination in the training group so we cannot make a prediction in regard to it.  Therefore, 
@@ -130,16 +122,21 @@ one of the first things we need to do is iterate through every ith testing group
 rows which do not have a corresponding key in the ith dictionary of 'predictions.'
 '''
 
+environment_variables = [variable for variable in bayesian_networks[0]]
+environment_variables.remove(TARGET_VARIABLE)
+print(environment_variables)
+env_map = environment_map(environment_variables)
 validations = []
 for i in range(K):
     validation = []
-    for j in range(len(test_groups[i])):
-        validation.append(predictions[i][test_groups[i].values[j][0]] == test_groups[i].iloc[j]['bool_data'])
-    validations.append(validation)
-# test_group_sizes is an array of length k in which the ith element is the size of the ith test-group
+    for j in range(test_group_sizes[i]):
+        state_variables = test_groups[i].iloc[j][environment_variables]
+        true_value_target = test_groups[i].iloc[j][TARGET_VARIABLE]
+        inference = inferences[i].query([TARGET_VARIABLE],
+                                        {v: env_map[v][sv] for v, sv in zip(environment_variables, state_variables)})
+        validation.append((inference.values[0] < .5) == true_value_target)
+    validations.append(np.array(validation))
 
-test_group_sizes = np.array([elem.size for elem in test_group_indexes])
-train_group_sizes = np.array([elem.size for elem in train_group_indexes])
 
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
 print(np.sum(group_prediction_accuracies) / K)
