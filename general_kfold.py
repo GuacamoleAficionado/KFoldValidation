@@ -2,32 +2,50 @@
 Author       :    Zach Seiss
 Email        :    zseiss2997@g.fmarion.edu
 Written      :    May 25, 2022
-Last Update  :    May 31, 2022
+Last Update  :    June 1, 2022
 """
 
 import numpy as np
 import pandas as pd
 import random
-import three_variable_acs as tv 
+import three_variable_acs as tv
 
-print(tv.bn.get_cpds()[0].variable)
-exit()
 
-df = pd.read_csv('ACST_Cust_Sum.csv')
+df = pd.read_csv('ACS_modified.csv')
+
+environment_variables = [elem.variable for elem in tv.bn.get_cpds()]
+
 
 '''  Given a variable this function returns a dictionary mapping every state
      of the variable to the integer that corresponds to its index in the CPT.
 '''
-def state_mapping(variable):
-    dict([(b, a) for a, b in enumerate(sorted(df.variable.unique()))])
 
 
-two_var_df = df[['DenominationalGroup', 'bool_data']]
-SIZE_OF_DATA = len(two_var_df)
+def state_mapping(data_frame, variable):
+    return dict([(b, a) for a, b in enumerate(sorted(data_frame[variable].unique()))])
+
+
+'''  Pass in the list of all environment variables as 'universe'.  The returned object
+     is a nested dictionary mapping each environment variable which maps its respective
+     state variables to their indexes in the appropriate CPT.
+'''
+
+
+def environment_map(universe):
+    print('hello.')
+    return {variable: state_mapping(df, variable) for variable in universe}
+
+
+print(environment_map(environment_variables))
+
+exit()
+
+
+SIZE_OF_DATA = len(df)
 K = 10
 
-index = list(range(len(two_var_df)))
-random_sample = two_var_df.iloc[np.array(random.sample(index, SIZE_OF_DATA))]
+index = list(range(len(df)))
+random_sample = df.iloc[np.array(random.sample(index, SIZE_OF_DATA))]
 sample_index = random_sample.index
 
 '''
@@ -50,7 +68,7 @@ the full data set
 '''
 # train_group_indexes is an array of length k which contains the index for each training group
 train_group_indexes = [sample_index.drop(test_group_indexes[i]) for i in range(K)]
-training_groups = [two_var_df.iloc[train_group_indexes[i]] for i in range(K)]
+training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
 t_g_processed = [training_groups[i].groupby('DenominationalGroup').mean() for i in range(K)]
 
 
@@ -59,11 +77,6 @@ def max_likelihood(x):
          is whether the event is more likely than not to occur.
     """
     return x > 0.5
-
-
-
-
-
 
 
 def training_predictions(assign, training):
@@ -87,7 +100,7 @@ maps the name of each denomination to our prediction as to whether the church wi
 not given the denomination.
 '''
 predictions = training_predictions(max_likelihood, t_g_processed)
-test_groups = [two_var_df.iloc[test_group_indexes[i]] for i in range(K)]
+test_groups = [df.iloc[test_group_indexes[i]] for i in range(K)]
 
 '''
 For each ith test group, we need to pass the index (DenominationalGroup) to the ith dictionary in 
