@@ -7,7 +7,7 @@ Last Update   : June 1, 2022
 
 import numpy as np
 import pandas as pd
-from functools import reduce
+import math
 
 '''  This function should take in a DataFrame object, a target 
      variable and a list of given variables.  The user may need to
@@ -21,7 +21,7 @@ from functools import reduce
 
 def make_cpd(data_frame, target, *givens):
     """
-                            FUNCTION INPUTS
+                                    FUNCTION INPUTS
     --------------------------------------------------------------------------------------
         data_frame   -   A pandas DataFrame object.
 
@@ -37,43 +37,79 @@ def make_cpd(data_frame, target, *givens):
         are input into the 'evidence' variable in TabularCPD() or the results
         WILL NOT BE CORRECT!!! 
     --------------------------------------------------------------------------------------
-   
-   """
-    if givens != ():
-
-        all_variables = list(givens) + [target]
-        df = data_frame[all_variables]
-        grouped = df.groupby(list(givens))
-        vc = grouped[target].value_counts().unstack(fill_value=0).stack()  # vc is abbreviation for 'value_counts'
-        c = grouped[target].count()  # c is short for 'count'
-        # The line below returns the total number of states for each 'given' variable.  We need these numbers
-        # in order to calculate the correct shape for the array that we want to output.
-        variable_states = [len(df[elem].unique()) for elem in givens]
-        # total_states_of_givens is the product of the number of states of all the 'given' variables in the space
-        # that the table is concerned with.
-        total_states_of_givens = reduce(lambda x, y: x * y, variable_states)
-
-        cardinality_of_target = len(df[target].unique())
-        # unprocessed_cpd is the conditional probability distribution as a flat list.  We need to process
-        # it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
-        unprocessed_cpd = (vc / c).values
-        if total_states_of_givens * cardinality_of_target > len(unprocessed_cpd):
-            s_i = [df.iloc[:, i].unique() for i in range(len(df.columns))]
-            c_i = s_i[:-1]
-            multi_index = pd.MultiIndex.from_product(s_i)
-            c_multi_index = pd.MultiIndex.from_product(c_i)
-            c = c.reindex(c_multi_index, fill_value=0)
-            vc = vc.reindex(multi_index, fill_value=0)
-            A = np.array(vc / np.repeat(c.values, 2))
-            unprocessed_cpd = np.nan_to_num(A)
-        # for num_states in variable_states:
-        return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
-
-    else:
+    """
+    '''
+    If 'givens' was empty, then we want the table for a prior.
+    '''
+    if givens == ():
         return np.expand_dims((data_frame[target].value_counts() / data_frame[target].count()), axis=1)
+
+    '''
+    Otherwise we need to do some extra processing. 
+    '''
+    all_variables = list(givens) + [target]
+    df = data_frame[all_variables]
+    grouped = df.groupby(list(givens))
+    val_counts = grouped[target].value_counts()
+    counts = grouped[target].count()
+
+    '''
+    We need to collect the Series objects that make up the DataFrame we're
+    using to make the CPT.  This is overly complicated but it is due to
+    an obnoxious behaviour of pandas which will be elaborated shortly.
+    '''
+
+    series = [sorted(df.iloc[:, i].unique()) for i in range(len(df.columns))]
+
+    '''
+    We need the Series objects because pandas exhibits a particular behaviour
+    in which the rows of a groupby object that are not 'instantiated'
+    simply get dropped.  This behaviour is absolutely not
+    what we want and there is no simple argument that we can pass to the the 
+    groupby method to change it.  The solution we came up with is to reindex
+    each groupby object with the cartesian product of all the series' which
+    make up that particular DataFrame object.
+    '''
+    val_counts_multi_index = pd.MultiIndex.from_product(series)
+    val_counts = val_counts.reindex(val_counts_multi_index, fill_value=0)
+
+    '''
+    For some reason if you use a multi-index with only a single level to
+    reindex a series the values all get switched to Nan so to counteract 
+    this we check the levels in the multi-index and change it to a standard
+    list if there is only a single level. 
+    '''
+    counts_multi_index = pd.MultiIndex.from_product(series[:-1])
+    counts_multi_index = counts_multi_index if counts_multi_index.nlevels > 1 \
+        else counts_multi_index.levels[0]
+    counts = counts.reindex(counts_multi_index, fill_value=0)
+
+    '''
+    After reindexing, for some reason, we need to modify 'counts' manually
+    in order to make the division of val_counts by counts work properly.
+    We might look into why this is if we get time. 
+    '''
+    target_variable_cardinality = len(df[target].unique())
+    arr = np.array(val_counts / np.repeat(counts.values, target_variable_cardinality))
+   
+    '''
+    'unprocessed_cpd' is the conditional probability distribution as a flat list.  We need to process
+    it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
+    '''
+    unprocessed_cpd = np.nan_to_num(arr)
+ 
+    '''
+    total_states_of_givens is the product of the number of states of all the 'given' variables in the space
+    that the table is concerned with.
+    '''
+    variable_states = [len(df[elem].unique()) for elem in givens]
+    total_states_of_givens = math.prod(variable_states)
+
+    return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
+
 
 #  Example ___________________________________________________________________
 
-df = pd.read_csv('ACS_modified.csv')
-my_cpd = make_cpd(df, 'Deactivated', 'DenominationalGroup', 'Product')
-print(my_cpd)
+# data = pd.read_csv('ACS_modified.csv')
+# my_cpd = make_cpd(data, 'Deactivated', 'Product', 'DenominationalGroup')
+# print(my_cpd)

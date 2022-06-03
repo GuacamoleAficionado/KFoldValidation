@@ -2,7 +2,7 @@
 Author       :    Zach Seiss
 Email        :    zseiss2997@g.fmarion.edu
 Written      :    May 25, 2022
-Last Update  :    June 1, 2022
+Last Update  :    June 3, 2022
 """
 
 import numpy as np
@@ -20,22 +20,33 @@ NUM_ROWS = len(df)
 TARGET_VARIABLE = 'Deactivated'
 
 
-def state_mapping(data_frame, variable):
-    """__________________________________________________________________________________________
-        Given an enivronment variable this function returns a dictionary mapping every state
-        of the variable to the integer that corresponds to its index in the conditional
-        probability table.
-       _________________________________________________________________________________________"""
-    return dict([(b, a) for a, b in enumerate(sorted(data_frame[variable].unique()))])
-
-
 def environment_map(data_frame, universe):
-    """__________________________________________________________________________________________
+    """                                 FUNCTION environment_map
+       __________________________________________________________________________________________
          User should pass in the list of all environment variables as 'universe'.  The returned 
          object is a nested dictionary mapping each environment variable to the dictionary which  
          maps its respective states to their indexes in the appropriate CPT.
+
+         data_frame         -   A DataFrame object which contains the envrironment variables
+                                that we are interested in.
+         universe           -   An iterable containing all the names (string format) of the
+                                evironment variables.  Should be a subset of data_frame.columns
        __________________________________________________________________________________________"""
-    return {variable: state_mapping(df, variable) for variable in universe}
+    return {variable: state_mapping(data_frame[variable].unique()) for variable in universe}
+
+
+def state_mapping(state_space):
+    """                                 FUNCTION state_mapping
+        __________________________________________________________________________________________
+        Given an environment variable this function returns a dictionary mapping every state
+        of the variable to the integer that corresponds to its index in the conditional
+        probability table.
+
+        state_space         -   The iterable containing all possible states of an environment
+                                variable.
+       _________________________________________________________________________________________"""
+    return dict([(b, a) for a, b in enumerate(sorted(state_space))])
+
 
 
 index = list(range(len(df)))
@@ -48,7 +59,6 @@ there will be n remaining unassigned elements in the sample.  So we remove the l
 index, split index into k equal sized groups then assign the remaining n elements to the first n of the 
 k groups.
 '''
-
 n = NUM_ROWS % K
 remaining_indices = sample_index[NUM_ROWS - n:]
 mod_sample_index = sample_index[: NUM_ROWS - n]
@@ -72,20 +82,48 @@ of the associated testing group and compare its max likelihood prediction agains
 #  We train each BN inside a for loop and then store each in a list called 'bayesian_networks'
 bayesian_networks = []
 for i in range(K):
-    bn = BayesianNetwork([('DenominationalGroup', 'Deactivated'), ('Deactivated', 'CongregantUsers')])
 
-    denominational_group = TabularCPD('DenominationalGroup', 18,
-                                      values=make_cpd(training_groups[i], 'DenominationalGroup'))
+    bn = BayesianNetwork([('DenominationalGroup', 'Deactivated'), 
+                          ('Deactivated', 'CongregantUsers'),
+                          ('Deactivated', 'UsingOnlineGiving'), 
+                          ('Deactivated', 'Timeline')])
 
-    deactivated_cpd = TabularCPD('Deactivated', 2,
-                                 values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
-                                 evidence=['DenominationalGroup'], evidence_card=[18])
+    denominational_group_cpd = TabularCPD(
+            'DenominationalGroup', 
+            18,
+            values=make_cpd(training_groups[i], 'DenominationalGroup'))
+    
+    deactivated_cpd = TabularCPD(
+            'Deactivated', 
+            2,
+            values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
+            evidence=['DenominationalGroup'], evidence_card=[18])
+    
+    congregant_users_cpd = TabularCPD(
+            'CongregantUsers', 
+            4,
+            values=make_cpd(training_groups[i], 'CongregantUsers', 'Deactivated'),
+            evidence=['Deactivated'], evidence_card=[2])
 
-    congregant_users_cpd = TabularCPD('CongregantUsers', 4,
-                                      values=make_cpd(training_groups[i], 'CongregantUsers', 'Deactivated'),
-                                      evidence=['Deactivated'], evidence_card=[2])
+    using_online_giving_cpd = TabularCPD(
+            'UsingOnlineGiving', 
+            2,
+            values=make_cpd(training_groups[i], 'UsingOnlineGiving', 'Deactivated'),
+            evidence=['Deactivated'], evidence_card=[2])
 
-    bn.add_cpds(denominational_group, deactivated_cpd, congregant_users_cpd)
+    timeline_cpd = TabularCPD(
+            'Timeline', 
+            5,
+            values=make_cpd(training_groups[i], 'Timeline', 'Deactivated'),
+            evidence=['Deactivated'], evidence_card=[2])
+
+    bn.add_cpds(denominational_group_cpd, 
+                deactivated_cpd,
+                congregant_users_cpd,
+                using_online_giving_cpd,
+                timeline_cpd)
+
+    # bn.check_model()
     bayesian_networks.append(bn)
 
 '''
@@ -98,7 +136,7 @@ test_group_sizes = np.array([elem.size for elem in test_group_indexes])
 train_group_sizes = np.array([elem.size for elem in train_group_indexes])
 
 '''
-Importantly, we can not assume that every item in our testing group has been accounted for in the
+Importantly, we cannot assume that every item in our testing group has been accounted for in the
 training group e.g. 'AME Zion' might be in a testing group when there were no instances of this 
 denomination in the training group so we cannot make a prediction in regard to it (probably?).
 '''
@@ -111,15 +149,18 @@ validations = []
 for i in range(K):
     validation = []
     for j in range(test_group_sizes[i]):
-        states = test_groups[i].iloc[j][environment_variables]
-        true_value_target = test_groups[i].iloc[j][TARGET_VARIABLE]
+        #  state_instantiation is a Series from which we can obtain the instantiated state variables.
+        state_instantiation = test_groups[i].iloc[j][environment_variables]
+        #  actual_target_value is the true value of the state variable we are trying to predict.
+        actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
         inference = inferences[i].query([TARGET_VARIABLE],
-                                        {v: env_map[v][s] for v, s in zip(environment_variables, states)},
+                                        {v: env_map[v][s] for v, s in zip(environment_variables, state_instantiation)},
                                         show_progress=False)
-        validation.append((inference.values[0] < .5) == true_value_target)
+        validation.append((inference.values[0] < .5) == actual_target_value)
     validations.append(np.array(validation))
 
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
 
+std_dev = np.std(group_prediction_accuracies)
 total_accuracy = np.sum(group_prediction_accuracies) / K
-print(f'Prediction Accuracy : {total_accuracy}')
+print(f'Prediction Accuracy : {total_accuracy}\nStandard Deviation : {std_dev}')
