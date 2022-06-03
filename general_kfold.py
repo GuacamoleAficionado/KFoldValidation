@@ -16,29 +16,30 @@ from cpdmaker import make_cpd
 random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
 K = 10
-SIZE_OF_DATA = len(df)
+NUM_ROWS = len(df)
 TARGET_VARIABLE = 'Deactivated'
 
 
 def state_mapping(data_frame, variable):
-    """
-        Given a variable this function returns a dictionary mapping every state
-         of the variable to the integer that corresponds to its index in the CPT.
-    """
+    """__________________________________________________________________________________________
+        Given an enivronment variable this function returns a dictionary mapping every state
+        of the variable to the integer that corresponds to its index in the conditional
+        probability table.
+       _________________________________________________________________________________________"""
     return dict([(b, a) for a, b in enumerate(sorted(data_frame[variable].unique()))])
 
 
-def environment_map(universe):
-    """ _________________________________________________________________________________________
-         Pass in the list of all environment variables as 'universe'.  The returned object
-         is a nested dictionary mapping each environment variable which maps its respective
-         state variables to their indexes in the appropriate CPT.
-         ________________________________________________________________________________________"""
+def environment_map(data_frame, universe):
+    """__________________________________________________________________________________________
+         User should pass in the list of all environment variables as 'universe'.  The returned 
+         object is a nested dictionary mapping each environment variable to the dictionary which  
+         maps its respective states to their indexes in the appropriate CPT.
+       __________________________________________________________________________________________"""
     return {variable: state_mapping(df, variable) for variable in universe}
 
 
 index = list(range(len(df)))
-random_sample = df.iloc[np.array(random.sample(index, SIZE_OF_DATA))]
+random_sample = df.iloc[np.array(random.sample(index, NUM_ROWS))]
 sample_index = random_sample.index
 
 '''
@@ -47,9 +48,10 @@ there will be n remaining unassigned elements in the sample.  So we remove the l
 index, split index into k equal sized groups then assign the remaining n elements to the first n of the 
 k groups.
 '''
-n = SIZE_OF_DATA % K
-remaining_indices = sample_index[SIZE_OF_DATA - n:]
-mod_sample_index = sample_index[: SIZE_OF_DATA - n]
+
+n = NUM_ROWS % K
+remaining_indices = sample_index[NUM_ROWS - n:]
+mod_sample_index = sample_index[: NUM_ROWS - n]
 test_group_indexes = np.split(np.array(mod_sample_index), K)
 for i in range(n):
     test_group_indexes[i] = np.append(test_group_indexes[i], (remaining_indices[i]))
@@ -72,7 +74,6 @@ bayesian_networks = []
 for i in range(K):
     bn = BayesianNetwork([('DenominationalGroup', 'Deactivated'), ('Deactivated', 'CongregantUsers')])
 
-    #  We need to do this but generally
     denominational_group = TabularCPD('DenominationalGroup', 18,
                                       values=make_cpd(training_groups[i], 'DenominationalGroup'))
 
@@ -105,15 +106,15 @@ denomination in the training group so we cannot make a prediction in regard to i
 inferences = [VariableElimination(bn) for bn in bayesian_networks]
 environment_variables = [variable for variable in bayesian_networks[0]]
 environment_variables.remove(TARGET_VARIABLE)
-env_map = environment_map(environment_variables)
+env_map = environment_map(df, environment_variables)
 validations = []
 for i in range(K):
     validation = []
     for j in range(test_group_sizes[i]):
-        state_variables = test_groups[i].iloc[j][environment_variables]
+        states = test_groups[i].iloc[j][environment_variables]
         true_value_target = test_groups[i].iloc[j][TARGET_VARIABLE]
         inference = inferences[i].query([TARGET_VARIABLE],
-                                        {v: env_map[v][sv] for v, sv in zip(environment_variables, state_variables)},
+                                        {v: env_map[v][s] for v, s in zip(environment_variables, states)},
                                         show_progress=False)
         validation.append((inference.values[0] < .5) == true_value_target)
     validations.append(np.array(validation))

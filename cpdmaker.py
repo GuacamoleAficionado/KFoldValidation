@@ -52,9 +52,20 @@ def make_cpd(data_frame, target, *givens):
         # total_states_of_givens is the product of the number of states of all the 'given' variables in the space
         # that the table is concerned with.
         total_states_of_givens = reduce(lambda x, y: x * y, variable_states)
+
+        cardinality_of_target = len(df[target].unique())
         # unprocessed_cpd is the conditional probability distribution as a flat list.  We need to process
         # it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
         unprocessed_cpd = (vc / c).values
+        if total_states_of_givens * cardinality_of_target > len(unprocessed_cpd):
+            s_i = [df.iloc[:, i].unique() for i in range(len(df.columns))]
+            c_i = s_i[:-1]
+            multi_index = pd.MultiIndex.from_product(s_i)
+            c_multi_index = pd.MultiIndex.from_product(c_i)
+            c = c.reindex(c_multi_index, fill_value=0)
+            vc = vc.reindex(multi_index, fill_value=0)
+            A = np.array(vc / np.repeat(c.values, 2))
+            unprocessed_cpd = np.nan_to_num(A)
         # for num_states in variable_states:
         return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
 
@@ -63,6 +74,6 @@ def make_cpd(data_frame, target, *givens):
 
 #  Example ___________________________________________________________________
 
-#df = pd.read_csv('ACS_modified.csv')
-#my_cpd = make_cpd(df, 'DenominationalGroup')
-#print(my_cpd)
+df = pd.read_csv('ACS_modified.csv')
+my_cpd = make_cpd(df, 'Deactivated', 'DenominationalGroup', 'Product')
+print(my_cpd)
