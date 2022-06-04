@@ -2,16 +2,14 @@
 Author       :    Zach Seiss
 Email        :    zseiss2997@g.fmarion.edu
 Written      :    May 25, 2022
-Last Update  :    June 3, 2022
+Last Update  :    June 4, 2022
 """
 
 import numpy as np
 import pandas as pd
 import random
-from pgmpy.models import BayesianNetwork
-from pgmpy.factors.discrete.CPD import TabularCPD
 from pgmpy.inference.ExactInference import VariableElimination
-from cpdmaker import make_cpd
+from bayes_net_model import make_bn
 
 random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
@@ -27,10 +25,10 @@ def environment_map(data_frame, universe):
          object is a nested dictionary mapping each environment variable to the dictionary which  
          maps its respective states to their indexes in the appropriate CPT.
 
-         data_frame         -   A DataFrame object which contains the envrironment variables
+         data_frame         -   A DataFrame object which contains the environment variables
                                 that we are interested in.
          universe           -   An iterable containing all the names (string format) of the
-                                evironment variables.  Should be a subset of data_frame.columns
+                                environment variables.  Should be a subset of data_frame.columns
        __________________________________________________________________________________________"""
     return {variable: state_mapping(data_frame[variable].unique()) for variable in universe}
 
@@ -46,7 +44,6 @@ def state_mapping(state_space):
                                 variable.
        _________________________________________________________________________________________"""
     return dict([(b, a) for a, b in enumerate(sorted(state_space))])
-
 
 
 index = list(range(len(df)))
@@ -74,8 +71,8 @@ the full data set
 # train_group_indexes is an array of length k which contains the index for each training group
 train_group_indexes = [sample_index.drop(test_group_indexes[i]) for i in range(K)]
 training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
-training_groups[0].to_csv('~/Desktop/sample.csv')
-exit()
+# training_groups[0].to_csv('~/Desktop/sample.csv')
+
 ''' 
 for each training group we have to train a new BN.  Then we will query that BN for each member
 of the associated testing group and compare its max likelihood prediction against the true value.
@@ -89,51 +86,13 @@ make_bn(training_groups, edges)
 
 '''
 
-
 bayesian_networks = []
 for i in range(K):
-
-    bn = BayesianNetwork([('DenominationalGroup', 'Deactivated'), 
-                          ('Deactivated', 'CongregantUsers'),
-                          ('Deactivated', 'UsingOnlineGiving'), 
-                          ('Deactivated', 'Timeline')])
-
-    denominational_group_cpd = TabularCPD(
-            'DenominationalGroup', 
-            18,
-            values=make_cpd(training_groups[i], 'DenominationalGroup'))
-    
-    deactivated_cpd = TabularCPD(
-            'Deactivated', 
-            2,
-            values=make_cpd(training_groups[i], 'Deactivated', 'DenominationalGroup'),
-            evidence=['DenominationalGroup'], evidence_card=[18])
-    
-    congregant_users_cpd = TabularCPD(
-            'CongregantUsers', 
-            4,
-            values=make_cpd(training_groups[i], 'CongregantUsers', 'Deactivated'),
-            evidence=['Deactivated'], evidence_card=[2])
-
-    using_online_giving_cpd = TabularCPD(
-            'UsingOnlineGiving', 
-            2,
-            values=make_cpd(training_groups[i], 'UsingOnlineGiving', 'Deactivated'),
-            evidence=['Deactivated'], evidence_card=[2])
-
-    timeline_cpd = TabularCPD(
-            'Timeline', 
-            5,
-            values=make_cpd(training_groups[i], 'Timeline', 'Deactivated'),
-            evidence=['Deactivated'], evidence_card=[2])
-
-    bn.add_cpds(denominational_group_cpd, 
-                deactivated_cpd,
-                congregant_users_cpd,
-                using_online_giving_cpd,
-                timeline_cpd)
-
-    # bn.check_model()
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Deactivated'),
+                                      ('Deactivated', 'CongregantUsers'),
+                                      ('Deactivated', 'UsingOnlineGiving')])
+    # ('Deactivated', 'Timeline')])
+    bn.check_model()
     bayesian_networks.append(bn)
 
 '''

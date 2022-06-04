@@ -1,10 +1,10 @@
 from pgmpy.models import BayesianNetwork
 from pgmpy.factors.discrete.CPD import TabularCPD
 from cpdmaker import make_cpd
-import pandas as pd
+# import pandas as pd
 
 #  This dataframe is for testing and not needed for actual use.
-df = pd.read_csv('~/Desktop/sample.csv')
+# df = pd.read_csv('~/Desktop/sample.csv')
 
 
 def replace(lst, item, replacement):
@@ -78,9 +78,9 @@ def make_bn(training_group, edges: list):
                            values=make_cpd(training_group, *cpt_target_and_givens[i]))
             )
     bn.add_cpds(*cpdts)
-    return bn.cpds
+    return bn
 
 
-print(make_bn(df, [('DenominationalGroup', 'Deactivated'),
-                   ('Deactivated', 'CongregantUsers'), ('Deactivated', 'UsingOnlineGiving'),
-                   ('Deactivated', 'Timeline')]))
+# print(make_bn(df, [('DenominationalGroup', 'Deactivated'),
+#                    ('Deactivated', 'CongregantUsers'), ('Deactivated', 'UsingOnlineGiving'),
+#                    ('Deactivated', 'Timeline')]))
