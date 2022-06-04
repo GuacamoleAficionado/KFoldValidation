@@ -3,11 +3,10 @@ from pgmpy.factors.discrete.CPD import TabularCPD
 from cpdmaker import make_cpd
 
 
-def replace(lst, item, replacement):
-    while lst.count(item) > 0:
-        index = lst.index(item)
-        lst.remove(item)
-        lst.insert(index, replacement)
+##################################  FOR TESTING  ###################################
+#import pandas as pd
+#df = pd.read_csv('~/PycharmProjects/KFoldValidation2/ACS_modified.csv')
+####################################################################################
 
 
 def flatten(lst):
@@ -19,10 +18,10 @@ def flatten(lst):
 
 
 def make_bn(training_group, edges: list):
-    #  This line gives us the set of nodes
+    #  This line gives us the set of nodes.
     nodes = {edges[i][j] for i in range(len(edges)) for j in range(len(edges[i]))}
 
-    #  We need the nodes in iterable form
+    #  We need the nodes in iterable form.
     nodes = list(nodes)
 
     #  The ith set in directions contains the elements that have a directed edge to the ith element in nodes
@@ -32,13 +31,21 @@ def make_bn(training_group, edges: list):
     #  edge pointing to the node given by its key.
     edge_map = {nodes[i]: sorted(list(directions[i])) for i in range(len(nodes))}
 
+    #  The ith element of cardinalities is the cardinality of nodes[i].
     cardinalities = [len(training_group[node].unique()) for node in nodes]
 
-    #  we need a dict to map nodes to their respective cardinalities for the evidence_cards
+    #  We need a dict to map nodes to their respective cardinalities for the evidence_cards.
     card_map = {node: card for node, card in zip(nodes, cardinalities)}
+
+    #  The ith element of evidence is a list of nodes that have a directed edge 
+    #  the node given by nodes[i].
     evidence = [edge_map[nodes[i]] for i in range(len(nodes))]
+
+    #  This line just swaps out any [] in evidence for None.
     evidence = [_ if _ else None for _ in evidence]
-    replace(evidence, [], [None])
+
+    #  The ith element of evidence_cards is a list of cardinalities that
+    #  correspond to the ith list in evidence.
     evidence_cards = []
     for i in range(len(evidence)):
         if evidence[i] is None:
@@ -49,6 +56,7 @@ def make_bn(training_group, edges: list):
             card += [card_map[evidence[i][j]]]
         evidence_cards += [card]
 
+
     '''  Let's make the BN  '''
 
     bn = BayesianNetwork(edges)
@@ -56,27 +64,14 @@ def make_bn(training_group, edges: list):
     for i in range(len(nodes)):
         cpt_target_and_givens = []
         for k in range(len(nodes)):
-            a, *b = list(edge_map.keys())[k], edge_map[list(edge_map.keys())[k]]
-            b.insert(0, a)
-            cpt_target_and_givens.append(flatten(b))
-        if evidence[i] is not None:
-            cpdts.append(
-                TabularCPD(nodes[i],
-                           cardinalities[i],
-                           values=make_cpd(training_group, *cpt_target_and_givens[i]),
-                           evidence=edge_map[nodes[i]],
-                           evidence_card=evidence_cards[i])
-            )
-        else:
-            cpdts.append(
-                TabularCPD(nodes[i],
-                           cardinalities[i],
-                           values=make_cpd(training_group, *cpt_target_and_givens[i]))
-            )
+            target, *givens = list(edge_map.keys())[k], edge_map[list(edge_map.keys())[k]]
+            givens.insert(0, target)
+            cpt_target_and_givens.append(flatten(givens))
+        cpdts.append(
+            TabularCPD(nodes[i],
+                       cardinalities[i],
+                       values=make_cpd(training_group, *cpt_target_and_givens[i]),
+                       evidence=evidence[i],
+                       evidence_card=evidence_cards[i]))
     bn.add_cpds(*cpdts)
     return bn
-
-
-# print(make_bn(df, [('DenominationalGroup', 'Deactivated'),
-#                    ('Deactivated', 'CongregantUsers'), ('Deactivated', 'UsingOnlineGiving'),
-#                    ('Deactivated', 'Timeline')]))
