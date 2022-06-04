@@ -1,10 +1,6 @@
 from pgmpy.models import BayesianNetwork
 from pgmpy.factors.discrete.CPD import TabularCPD
 from cpdmaker import make_cpd
-# import pandas as pd
-
-#  This dataframe is for testing and not needed for actual use.
-# df = pd.read_csv('~/Desktop/sample.csv')
 
 
 def replace(lst, item, replacement):

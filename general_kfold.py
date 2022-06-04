@@ -90,9 +90,9 @@ bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'Deactivated'),
                                       ('Deactivated', 'CongregantUsers'),
-                                      ('Deactivated', 'UsingOnlineGiving')])
-    # ('Deactivated', 'Timeline')])
-    bn.check_model()
+                                      ('Deactivated', 'UsingOnlineGiving'),
+                                      ('Deactivated', 'Timeline')])
+    # bn.check_model()
     bayesian_networks.append(bn)
 
 '''
