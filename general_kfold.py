@@ -74,12 +74,22 @@ the full data set
 # train_group_indexes is an array of length k which contains the index for each training group
 train_group_indexes = [sample_index.drop(test_group_indexes[i]) for i in range(K)]
 training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
-
+training_groups[0].to_csv('~/Desktop/sample.csv')
+exit()
 ''' 
 for each training group we have to train a new BN.  Then we will query that BN for each member
 of the associated testing group and compare its max likelihood prediction against the true value.
 '''
 #  We train each BN inside a for loop and then store each in a list called 'bayesian_networks'
+
+
+'''
+
+make_bn(training_groups, edges) 
+
+'''
+
+
 bayesian_networks = []
 for i in range(K):
 

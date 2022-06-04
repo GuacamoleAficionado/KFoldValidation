@@ -2,7 +2,7 @@
 Author        : Zach Seiss
 Email         : zseiss2997@gmail.com
 Date Created  : May 31, 2022
-Last Update   : June 1, 2022
+Last Update   : June 3, 2022
 """
 
 import numpy as np
