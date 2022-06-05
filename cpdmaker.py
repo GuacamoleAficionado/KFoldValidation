@@ -2,7 +2,7 @@
 Author        : Zach Seiss
 Email         : zseiss2997@gmail.com
 Date Created  : May 31, 2022
-Last Update   : June 3, 2022
+Last Update   : June 5, 2022
 """
 
 import numpy as np
@@ -17,6 +17,13 @@ import math
      currently boolean, the user will need to operate on the 
      column to make its values boolean before inputting here.
 '''
+
+######################## FOR TESTING #######################################################
+data_frame = pd.read_csv('/home/zach/PycharmProjects/KFoldValidation2/ACS_modified.csv')
+prior = 'DenominationalGroup'
+
+
+############################################################################################
 
 
 def make_cpd(data_frame, target, *givens):
@@ -39,10 +46,16 @@ def make_cpd(data_frame, target, *givens):
     --------------------------------------------------------------------------------------
     """
     '''
-    If 'givens' was empty, then we want the table for a prior.
+    If 'givens' is empty, then we want the table for a prior.
     '''
     if givens == ():
-        return np.expand_dims((data_frame[target].value_counts() / data_frame[target].count()), axis=1)
+        '''  The convention we have chosen is to sort CPDTs lexicographically.  
+             Without sorting and reindexing the Series object that represents the 
+             the states of the environment variable, we will get a sort by value
+             counts and this will cause miscalculation further down the line.'''
+        sorted_index = sorted(data_frame[target].value_counts().index)
+        sorted_series = data_frame[target].value_counts().reindex(sorted_index)
+        return np.expand_dims((sorted_series / data_frame[target].count()), axis=1)
 
     '''
     Otherwise we need to do some extra processing. 
@@ -91,13 +104,13 @@ def make_cpd(data_frame, target, *givens):
     '''
     target_variable_cardinality = len(df[target].unique())
     arr = np.array(val_counts / np.repeat(counts.values, target_variable_cardinality))
-   
+
     '''
     'unprocessed_cpd' is the conditional probability distribution as a flat list.  We need to process
     it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
     '''
     unprocessed_cpd = np.nan_to_num(arr)
- 
+
     '''
     total_states_of_givens is the product of the number of states of all the 'given' variables in the space
     that the table is concerned with.
@@ -107,9 +120,8 @@ def make_cpd(data_frame, target, *givens):
 
     return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
 
-
 #  Example ___________________________________________________________________
 
 # data = pd.read_csv('ACS_modified.csv')
-# my_cpd = make_cpd(data, 'Deactivated', 'Product', 'DenominationalGroup')
+# my_cpd = make_cpd(data, 'DenominationalGroup')
 # print(my_cpd)

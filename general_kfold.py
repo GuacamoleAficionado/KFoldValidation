@@ -2,49 +2,20 @@
 Author       :    Zach Seiss
 Email        :    zseiss2997@g.fmarion.edu
 Written      :    May 25, 2022
-Last Update  :    June 4, 2022
+Last Update  :    June 5, 2022
 """
 
 import numpy as np
 import pandas as pd
 import random
-from pgmpy.inference.ExactInference import VariableElimination
 from bayes_net_model import make_bn
+from optimized_query import fast_query
 
 random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
 K = 10
 NUM_ROWS = len(df)
 TARGET_VARIABLE = 'Deactivated'
-
-
-def environment_map(data_frame, universe):
-    """                                 FUNCTION environment_map
-       __________________________________________________________________________________________
-         User should pass in the list of all environment variables as 'universe'.  The returned 
-         object is a nested dictionary mapping each environment variable to the dictionary which  
-         maps its respective states to their indexes in the appropriate CPT.
-
-         data_frame         -   A DataFrame object which contains the environment variables
-                                that we are interested in.
-         universe           -   An iterable containing all the names (string format) of the
-                                environment variables.  Should be a subset of data_frame.columns
-       __________________________________________________________________________________________"""
-    return {variable: state_mapping(data_frame[variable].unique()) for variable in universe}
-
-
-def state_mapping(state_space):
-    """                                 FUNCTION state_mapping
-        __________________________________________________________________________________________
-        Given an environment variable this function returns a dictionary mapping every state
-        of the variable to the integer that corresponds to its index in the conditional
-        probability table.
-
-        state_space         -   The iterable containing all possible states of an environment
-                                variable.
-       _________________________________________________________________________________________"""
-    return dict([(b, a) for a, b in enumerate(sorted(state_space))])
-
 
 index = list(range(len(df)))
 random_sample = df.iloc[np.array(random.sample(index, NUM_ROWS))]
@@ -76,6 +47,11 @@ training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
 for each training group we have to train a new BN.  Then we will query that BN for each member
 of the associated testing group and compare its max likelihood prediction against the true value.
 '''
+
+'''  AS CURRENTLY IMPLEMENTED, THIS PROGRAM WILL FAIL FOR SINGLE NODE BNs!!!!  
+     Single node BNs are useless outside of instructive purposes but it should
+     be noted here.
+'''
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'Deactivated'),
@@ -94,16 +70,18 @@ test_groups = [df.iloc[test_group_indexes[i]] for i in range(K)]
 test_group_sizes = np.array([elem.size for elem in test_group_indexes])
 train_group_sizes = np.array([elem.size for elem in train_group_indexes])
 
-'''
-Importantly, we cannot assume that every item in our testing group has been accounted for in the
-training group e.g. 'AME Zion' might be in a testing group when there were no instances of this 
-denomination in the training group so we cannot make a prediction in regard to it (probably?).
-'''
-
-inferences = [VariableElimination(bn) for bn in bayesian_networks]
 environment_variables = [variable for variable in bayesian_networks[0]]
 environment_variables.remove(TARGET_VARIABLE)
-env_map = environment_map(df, environment_variables)
+
+''' 
+The function fast_query will query all of the bayesian networks with the whole environment
+map and map the queries to their respective outputs, reducing computation time by 
+eliminating repeat calculations.
+'''
+fq = fast_query(bayesian_networks,
+                environment_variables,
+                df,
+                TARGET_VARIABLE)
 validations = []
 for i in range(K):
     validation = []
@@ -112,10 +90,7 @@ for i in range(K):
         state_instantiation = test_groups[i].iloc[j][environment_variables]
         #  actual_target_value is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
-        inference = inferences[i].query([TARGET_VARIABLE],
-                                        {v: env_map[v][s] for v, s in zip(environment_variables, state_instantiation)},
-                                        show_progress=False)
-        validation.append((inference.values[0] < .5) == actual_target_value)
+        validation.append(fq[i].loc[tuple(state_instantiation.values)]['0_y'] == actual_target_value)
     validations.append(np.array(validation))
 
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
