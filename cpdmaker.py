@@ -18,13 +18,6 @@ import math
      column to make its values boolean before inputting here.
 '''
 
-######################## FOR TESTING #######################################################
-data_frame = pd.read_csv('/home/zach/PycharmProjects/KFoldValidation2/ACS_modified.csv')
-prior = 'DenominationalGroup'
-
-
-############################################################################################
-
 
 def make_cpd(data_frame, target, *givens):
     """

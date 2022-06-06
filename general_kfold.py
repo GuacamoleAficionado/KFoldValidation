@@ -8,8 +8,12 @@ Last Update  :    June 5, 2022
 import numpy as np
 import pandas as pd
 import random
+from time import time
 from bayes_net_model import make_bn
 from optimized_query import fast_query
+
+# we will define variables begin and end to keep track of program execution time
+begin = time()
 
 random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
@@ -48,16 +52,16 @@ for each training group we have to train a new BN.  Then we will query that BN f
 of the associated testing group and compare its max likelihood prediction against the true value.
 '''
 
-'''  AS CURRENTLY IMPLEMENTED, THIS PROGRAM WILL FAIL FOR SINGLE NODE BNs!!!!  
-     Single node BNs are useless outside of instructive purposes but it should
-     be noted here.
+'''  AS CURRENTLY IMPLEMENTED, THIS PROGRAM WILL FAIL FOR LESS THAN 3 NODE BNs!!!!  
 '''
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'Deactivated'),
                                       ('Deactivated', 'CongregantUsers'),
                                       ('Deactivated', 'UsingOnlineGiving'),
-                                      ('Deactivated', 'Timeline')])
+                                      ('Deactivated', 'Timeline'),
+                                      ('Deactivated', 'UsingPathways'),
+                                      ('Deactivated', 'UsingMissionInsite')])
     # bn.check_model()
     bayesian_networks.append(bn)
 
@@ -95,6 +99,20 @@ for i in range(K):
 
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
 
+############################################  REPORT PRINTING  ###############################################
 std_dev = np.std(group_prediction_accuracies)
 total_accuracy = np.sum(group_prediction_accuracies) / K
-print(f'Prediction Accuracy : {total_accuracy}\nStandard Deviation : {std_dev}')
+end = time()
+bn = bayesian_networks[0]
+report = f'Prediction Accuracy : {round(total_accuracy, 5)}\n' \
+         f'Standard Deviation : {round(std_dev, 5)}\n' \
+         f'Execution Time : {round(((end - begin) / 60), 2)} minutes\n' \
+         f'Nodes : {bn.nodes}\n' \
+         f'Edges : {bn.edges}\n' \
+         f'In Degree : {bn.in_degree}\n' \
+         f'Out Degree : {bn.out_degree}\n' \
+         f'States : {bn.states}'
+print(report)
+with open('/home/zach/Desktop/Some sample BN testing', 'a') as file:
+    file.write('\n\n' + report)
+##############################################################################################################
