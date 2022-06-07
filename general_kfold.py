@@ -57,9 +57,9 @@ of the associated testing group and compare its max likelihood prediction agains
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('Product', 'LikesProduct'),
-                                      ('StateCleaned', 'LikesProduct'),
+                                      ('State', 'LikesProduct'),
                                       ('DenominationalGroup', 'LikesProduct'),
-                                      # ('LikesProduct', 'CongregantUsers')])
+                                      ('LikesProduct', 'CongregantUsers'),
                                       ('LikesProduct', 'UsingOnlineGiving'),
                                       ('LikesProduct', 'Timeline'),
                                       ('LikesProduct', 'UsingPathways'),
@@ -89,10 +89,10 @@ fq = fast_query(bayesian_networks,
                 df,
                 TARGET_VARIABLE)
 validations = []
-risky_clients = np.array([])
+risky_clients = []
 for i in range(K):
     validation = []
-    false_positives = np.array([])
+    false_positives = []
     for j in range(test_group_sizes[i]):
         #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
@@ -105,12 +105,19 @@ for i in range(K):
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
         validation.append(prediction == actual_target_value)
         if not prediction and actual_target_value:
-            false_positives = np.append(false_positives, client_ID)
-    risky_clients = np.append(risky_clients, false_positives)
+            false_positives.append(client_ID)
+    risky_clients.append(false_positives)
     validations.append(np.array(validation))
-risky_clients = risky_clients.flatten()
+#  rc_sizes is the number of fasle negatives in each testing group which we use in an error computation later.
+rc_sizes = np.array([len(lst) for lst in risky_clients])
 # data_on_risky_clients = df.loc[df['ID'].isin(risky_clients)]
-group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
+
+
+'''____________________________________ERROR CALCULATION_____________________________________________________'''
+num_correct_predictions = np.array([np.sum(validation) for validation in validations])
+group_prediction_accuracies = num_correct_predictions / test_group_sizes
+false_negatives_not_counted = num_correct_predictions / (test_group_sizes - rc_sizes)
+mean_fnnc = np.mean(false_negatives_not_counted)
 
 ############################################  REPORT PRINTING  ###############################################
 std_dev = np.std(group_prediction_accuracies)
@@ -118,6 +125,7 @@ total_accuracy = np.sum(group_prediction_accuracies) / K
 end = time()
 bn = bayesian_networks[0]
 report = f'Prediction Accuracy : {round(total_accuracy, 5)}\n' \
+         f'Accuracy without "false negatives" : {round(mean_fnnc, 5)}\n' \
          f'Standard Deviation : {round(std_dev, 5)}\n' \
          f'Execution Time : {round(((end - begin) / 60), 2)} minutes\n' \
          f'Nodes : {bn.nodes}\n' \
@@ -126,6 +134,9 @@ report = f'Prediction Accuracy : {round(total_accuracy, 5)}\n' \
          f'Out Degree : {bn.out_degree}\n' \
          f'States : {bn.states}'
 print(report)
-with open('/home/zach/Desktop/Some sample BN testing', 'a') as file:
-   file.write('\n\n' + report)
+with open('RiskyClients.txt', 'a') as file:
+    file.write(f'\n\n\n{bn.edges}')
+    file.write(f'\n\n{str(risky_clients)}')
+with open('/home/zach/Desktop/new_BN_testing.txt', 'a') as file:
+    file.write('\n\n' + report)
 ##############################################################################################################
