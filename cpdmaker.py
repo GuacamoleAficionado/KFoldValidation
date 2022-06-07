@@ -118,7 +118,16 @@ def make_cpd(data_frame, target, *givens):
          This particular solution only works when the target variable is binary.
          That's fine for our project but to get more general would require 
          some thought.'''
-    problem_cols = (np.logical_and(cpt[0] == cpt[1], np.add(cpt[0], cpt[1]) != 1))
+         
+    '''  It might seem here that rather than use a logical_and operation we
+         should simply check to see that cpt[0] + cpt[1] == 1, that is, the
+         columns of the CPT sum to 1.  However, we specifically want to look
+         for the case where the sum of the column is zero.  If there is a 
+         case where 0 < sum(column) < 1 then that would be indicative of a
+         fundamentally different kind of error and we want the interpreter
+         to raise an Exception to notify us
+    '''
+    problem_cols = (np.logical_and(cpt[0] == cpt[1], cpt[0] == 0))
     if np.any(problem_cols):
         problem_index = [i for i in range(problem_cols.size) if problem_cols[i]]
         num_problems = len(problem_index)

@@ -62,16 +62,14 @@ def make_bn(training_group, edges: list):
     bn = BayesianNetwork(edges)
     cpdts = []
     for i in range(len(nodes)):
-        cpdt_target_and_givens = []
-        for j in range(len(nodes)):
-            key = list(edge_map.keys())[j]
-            target, *givens = key, edge_map[key]
-            givens.insert(0, target)
-            cpdt_target_and_givens.append(flatten(givens))
+        key = list(edge_map.keys())[i]
+        target, *givens = key, edge_map[key]
+        givens.insert(0, target)
+        cpdt_target_and_givens = flatten(givens)
         cpdts.append(
             TabularCPD(nodes[i],
                        cardinalities[i],
-                       values=make_cpd(training_group, *cpdt_target_and_givens[i]),
+                       values=make_cpd(training_group, *cpdt_target_and_givens),
                        evidence=evidence[i],
                        evidence_card=evidence_cards[i]))
     bn.add_cpds(*cpdts)

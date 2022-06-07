@@ -56,14 +56,14 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('Product', 'LikesProduct'),
-                                      ('State', 'LikesProduct'),
+    bn = make_bn(training_groups[i], [#('Product', 'LikesProduct'),
+                                      #('State', 'LikesProduct'),
                                       ('DenominationalGroup', 'LikesProduct'),
-                                      ('LikesProduct', 'CongregantUsers'),
-                                      ('LikesProduct', 'UsingOnlineGiving'),
-                                      ('LikesProduct', 'Timeline'),
-                                      ('LikesProduct', 'UsingPathways'),
-                                      ('LikesProduct', 'UsingMissionInsite')])
+                                      ('LikesProduct', 'CongregantUsers')])
+                                      #('LikesProduct', 'UsingOnlineGiving'),
+                                      #('LikesProduct', 'Timeline'),
+                                      #('LikesProduct', 'UsingPathways'),
+                                      #('LikesProduct', 'UsingMissionInsite')])
     # bn.check_model()
     bayesian_networks.append(bn)
 
@@ -113,13 +113,14 @@ rc_sizes = np.array([len(lst) for lst in risky_clients])
 # data_on_risky_clients = df.loc[df['ID'].isin(risky_clients)]
 
 
-'''____________________________________ERROR CALCULATION_____________________________________________________'''
+############################################  ERROR CALCULATION ############################################# 
 num_correct_predictions = np.array([np.sum(validation) for validation in validations])
 group_prediction_accuracies = num_correct_predictions / test_group_sizes
 false_negatives_not_counted = num_correct_predictions / (test_group_sizes - rc_sizes)
 mean_fnnc = np.mean(false_negatives_not_counted)
+#############################################################################################################
 
-############################################  REPORT PRINTING  ###############################################
+############################################  REPORT PRINTING  ##############################################
 std_dev = np.std(group_prediction_accuracies)
 total_accuracy = np.sum(group_prediction_accuracies) / K
 end = time()
@@ -139,4 +140,4 @@ with open('RiskyClients.txt', 'a') as file:
     file.write(f'\n\n{str(risky_clients)}')
 with open('/home/zach/Desktop/new_BN_testing.txt', 'a') as file:
     file.write('\n\n' + report)
-##############################################################################################################
+#############################################################################################################
