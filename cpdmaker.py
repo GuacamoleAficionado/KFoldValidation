@@ -111,10 +111,26 @@ def make_cpd(data_frame, target, *givens):
     variable_states = [len(df[elem].unique()) for elem in givens]
     total_states_of_givens = math.prod(variable_states)
 
-    return np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
+    '''  Now we check to see if any of the columns of the CPT are invalid.  
+         This particular solution only works when the target variable is binary.
+         That's fine for our project but to get more general would require 
+         some thought.'''
+    cpt = np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
+    problem_cols = (np.logical_and(cpt[0] == cpt[1], cpt[0] == 0))
+    if np.any(problem_cols):
+        problem_index = [i for i in range(problem_cols.size) if problem_cols[i]]
+        num_problems = len(problem_index)
+        num_cols = np.shape(cpt)[1]
+        avg_zeroth_row = np.sum(cpt[0]) / (num_cols - num_problems)
+        avg_first_row = np.sum(cpt[1]) / (num_cols - num_problems)
+        cpt[0][problem_index] = avg_zeroth_row
+        cpt[1][problem_index] = avg_first_row
+    return cpt
+
+
 
 #  Example ___________________________________________________________________
 
 # data = pd.read_csv('ACS_modified.csv')
-# my_cpd = make_cpd(data, 'DenominationalGroup')
-# print(my_cpd)
+# my_cpd = make_cpd(data, 'LikesProduct', 'Product', 'DenominationalGroup', 'StateCleaned')
+# print(np.shape(my_cpd))

@@ -19,7 +19,7 @@ random.seed(0)
 df = pd.read_csv('ACS_modified.csv')
 K = 10
 NUM_ROWS = len(df)
-TARGET_VARIABLE = 'Deactivated'
+TARGET_VARIABLE = 'LikesProduct'
 
 index = list(range(len(df)))
 random_sample = df.iloc[np.array(random.sample(index, NUM_ROWS))]
@@ -56,12 +56,14 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Deactivated'),
-                                      ('Deactivated', 'CongregantUsers'),
-                                      ('Deactivated', 'UsingOnlineGiving'),
-                                      ('Deactivated', 'Timeline'),
-                                      ('Deactivated', 'UsingPathways'),
-                                      ('Deactivated', 'UsingMissionInsite')])
+    bn = make_bn(training_groups[i], [('Product', 'LikesProduct'),
+                                      ('StateCleaned', 'LikesProduct'),
+                                      ('DenominationalGroup', 'LikesProduct'),
+                                      # ('LikesProduct', 'CongregantUsers')])
+                                      ('LikesProduct', 'UsingOnlineGiving'),
+                                      ('LikesProduct', 'Timeline'),
+                                      ('LikesProduct', 'UsingPathways'),
+                                      ('LikesProduct', 'UsingMissionInsite')])
     # bn.check_model()
     bayesian_networks.append(bn)
 
@@ -87,16 +89,27 @@ fq = fast_query(bayesian_networks,
                 df,
                 TARGET_VARIABLE)
 validations = []
+risky_clients = np.array([])
 for i in range(K):
     validation = []
+    false_positives = np.array([])
     for j in range(test_group_sizes[i]):
-        #  state_instantiation is a Series from which we can obtain the instantiated state variables.
+        #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
-        #  actual_target_value is the true value of the state variable we are trying to predict.
+        #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
+        prediction = fq[i].loc[tuple(state_instantiation.values)]['0_y']
+        # 'client_ID' is the ID in the dataset that refers to the client about whom we are currently making a
+        # prediction.
+        client_ID = test_groups[i].iloc[j]['ID']
+        #  'actual_target_value' is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
-        validation.append(fq[i].loc[tuple(state_instantiation.values)]['0_y'] == actual_target_value)
+        validation.append(prediction == actual_target_value)
+        if not prediction and actual_target_value:
+            false_positives = np.append(false_positives, client_ID)
+    risky_clients = np.append(risky_clients, false_positives)
     validations.append(np.array(validation))
-
+risky_clients = risky_clients.flatten()
+# data_on_risky_clients = df.loc[df['ID'].isin(risky_clients)]
 group_prediction_accuracies = np.array([np.sum(validation) for validation in validations]) / test_group_sizes
 
 ############################################  REPORT PRINTING  ###############################################
@@ -114,5 +127,5 @@ report = f'Prediction Accuracy : {round(total_accuracy, 5)}\n' \
          f'States : {bn.states}'
 print(report)
 with open('/home/zach/Desktop/Some sample BN testing', 'a') as file:
-    file.write('\n\n' + report)
+   file.write('\n\n' + report)
 ##############################################################################################################
