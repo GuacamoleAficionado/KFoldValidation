@@ -9,14 +9,6 @@ from cpdmaker import make_cpd
 ####################################################################################
 
 
-def flatten(lst):
-    if not lst:
-        return lst
-    if isinstance(lst[0], list):
-        return flatten(lst[0]) + flatten(lst[1:])
-    return lst[:1] + flatten(lst[1:])
-
-
 def make_bn(training_group, edges: list):
     #  This line gives us the set of nodes.
     nodes = {edges[i][j] for i in range(len(edges)) for j in range(len(edges[i]))}
@@ -60,17 +52,13 @@ def make_bn(training_group, edges: list):
     '''  Let's make the BN  '''
 
     bn = BayesianNetwork(edges)
-    cpdts = []
     for i in range(len(nodes)):
         key = list(edge_map.keys())[i]
-        target, *givens = key, edge_map[key]
-        givens.insert(0, target)
-        cpdt_target_and_givens = flatten(givens)
-        cpdts.append(
+        target_and_givens = [key] + edge_map[key]
+        bn.add_cpds(
             TabularCPD(nodes[i],
                        cardinalities[i],
-                       values=make_cpd(training_group, *cpdt_target_and_givens),
+                       values=make_cpd(training_group, *target_and_givens),
                        evidence=evidence[i],
                        evidence_card=evidence_cards[i]))
-    bn.add_cpds(*cpdts)
     return bn
