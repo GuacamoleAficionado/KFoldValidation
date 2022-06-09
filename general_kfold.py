@@ -16,7 +16,7 @@ from optimized_query import fast_query
 begin = time()
 
 random.seed(0)
-df = pd.read_csv('ACS_modified.csv')
+df = pd.read_csv('/home/zach/Desktop/ACS_modified_v2.csv')
 K = 10
 NUM_ROWS = len(df)
 TARGET_VARIABLE = 'LikesProduct'
@@ -27,7 +27,7 @@ sample_index = random_sample.index
 
 '''
 We let n = length of index mod k.  That is, if we split the random sample into k equal sized groups,
-there will be n remaining unassigned elements in the sample.  So we remove the last n elements from 
+there will be n < k remaining unassigned elements in the sample.  So we remove the last n elements from 
 index, split index into k equal sized groups then assign the remaining n elements to the first n of the 
 k groups.
 '''
@@ -56,14 +56,15 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [#('Product', 'LikesProduct'),
-                                      #('State', 'LikesProduct'),
+    bn = make_bn(training_groups[i], [('Product', 'LikesProduct'),
+                                      ('State', 'LikesProduct'),
                                       ('DenominationalGroup', 'LikesProduct'),
-                                      ('LikesProduct', 'CongregantUsers')])
-                                      #('LikesProduct', 'UsingOnlineGiving'),
-                                      #('LikesProduct', 'Timeline'),
-                                      #('LikesProduct', 'UsingPathways'),
-                                      #('LikesProduct', 'UsingMissionInsite')])
+                                      #('LikesProduct', 'CongregantUsers')])
+                                      ('LikesProduct', 'UsingOnlineGiving'),
+                                      ('LikesProduct', 'Timeline'),
+                                      ('LikesProduct', 'UsingPathways'),
+                                      ('LikesProduct', 'MissingValues'),
+                                      ('LikesProduct', 'UsingMissionInsite')])
     # bn.check_model()
     bayesian_networks.append(bn)
 

@@ -4,8 +4,8 @@ from cpdmaker import make_cpd
 
 
 ##################################  FOR TESTING  ###################################
-#import pandas as pd
-#df = pd.read_csv('~/PycharmProjects/KFoldValidation2/ACS_modified.csv')
+# import pandas as pd
+# df = pd.read_csv('~/PycharmProjects/KFoldValidation2/ACS_modified.csv')
 ####################################################################################
 
 
@@ -47,7 +47,6 @@ def make_bn(training_group, edges: list):
         for j in range(len(evidence[i])):
             card += [card_map[evidence[i][j]]]
         evidence_cards += [card]
-
 
     '''  Let's make the BN  '''
 
