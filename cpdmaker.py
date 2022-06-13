@@ -56,9 +56,9 @@ def make_cpd(data_frame, target, *givens):
     all_variables = list(givens) + [target]
     df = data_frame[all_variables]
     grouped = df.groupby(list(givens))
-    val_counts = grouped[target].value_counts()
-    counts = grouped[target].count()
-
+    val_counts = grouped[target].value_counts().unstack(fill_value=0).stack()
+    count = grouped[target].count().unstack(fill_value=0).stack()
+    myObject: pd.Series = val_counts.divide(count)
     '''
     We need to collect the Series objects that make up the DataFrame we're
     using to make the CPT.  This is overly complicated but it is due to
@@ -77,7 +77,9 @@ def make_cpd(data_frame, target, *givens):
     make up that particular DataFrame object.
     '''
     val_counts_multi_index = pd.MultiIndex.from_product(series)
-    val_counts = val_counts.reindex(val_counts_multi_index, fill_value=0)
+    myObject = myObject.reindex(val_counts_multi_index, fill_value=0)
+    unprocessed_cpd = myObject.to_numpy()
+
 
     '''
     For some reason if you use a multi-index with only a single level to
@@ -85,24 +87,28 @@ def make_cpd(data_frame, target, *givens):
     this we check the levels in the multi-index and change it to a standard
     list if there is only a single level. 
     '''
-    counts_multi_index = pd.MultiIndex.from_product(series[:-1])
-    counts_multi_index = counts_multi_index if counts_multi_index.nlevels > 1 \
-        else counts_multi_index.levels[0]
-    counts = counts.reindex(counts_multi_index, fill_value=0)
-
-    '''
-    After reindexing, for some reason, we need to modify 'counts' manually
-    in order to make the division of val_counts by counts work properly.
-    We might look into why this is if we get time. 
-    '''
-    target_variable_cardinality = len(df[target].unique())
-    arr = np.array(val_counts / np.repeat(counts.values, target_variable_cardinality))
+    # counts_multi_index = pd.MultiIndex.from_product(series[:-1])
+    # counts_multi_index = counts_multi_index if counts_multi_index.nlevels > 1 \
+    #     else counts_multi_index.levels[0]
+    # counts = counts.reindex(counts_multi_index, fill_value=0)
+    # # print(val_counts, '\n', counts)
+    # print(val_counts/counts)
+    # print('HELLO.')
+    # exit()
+    #
+    # '''
+    # After reindexing, for some reason, we need to modify 'counts' manually
+    # in order to make the division of val_counts by counts work properly.
+    # We might look into why this is if we get time.
+    # '''
+    # target_variable_cardinality = len(df[target].unique())
+    # arr = np.array(val_counts / np.repeat(counts.values, target_variable_cardinality))
 
     '''
     'unprocessed_cpd' is the conditional probability distribution as a flat list.  We need to process
     it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
     '''
-    unprocessed_cpd = np.nan_to_num(arr)
+    # unprocessed_cpd = np.nan_to_num(arr)
 
     '''
     total_states_of_givens is the product of the number of states of all the 'given' variables in the space
@@ -142,6 +148,6 @@ def make_cpd(data_frame, target, *givens):
 
 #  Example ___________________________________________________________________
 
-# data = pd.read_csv('ACS_modified.csv')
-# my_cpd = make_cpd(data, 'LikesProduct', 'Product', 'DenominationalGroup', 'StateCleaned')
-# print(np.shape(my_cpd))
+data = pd.read_csv('ACST_Cust_Sum.csv')
+my_cpd = make_cpd(data, 'CongregantUsers_grouped', 'TWA_grouped', 'LikesACS')
+print(my_cpd)

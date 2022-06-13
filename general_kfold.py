@@ -16,10 +16,10 @@ from optimized_query import fast_query
 begin = time()
 
 random.seed(0)
-df = pd.read_csv('/home/zach/Desktop/ACS_modified_v2.csv')
+df = pd.read_csv('ACST_Cust_Sum.csv')
 K = 10
 NUM_ROWS = len(df)
-TARGET_VARIABLE = 'LikesProduct'
+TARGET_VARIABLE = 'LikesACS'
 
 index = list(range(len(df)))
 random_sample = df.iloc[np.array(random.sample(index, NUM_ROWS))]
@@ -56,15 +56,14 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('Product', 'LikesProduct'),
-                                      ('State', 'LikesProduct'),
-                                      ('DenominationalGroup', 'LikesProduct'),
-                                      #('LikesProduct', 'CongregantUsers')])
-                                      ('LikesProduct', 'UsingOnlineGiving'),
-                                      ('LikesProduct', 'Timeline'),
-                                      ('LikesProduct', 'UsingPathways'),
-                                      ('LikesProduct', 'MissingValues'),
-                                      ('LikesProduct', 'UsingMissionInsite')])
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'LikesACS'),
+                                      ('Product', 'LikesACS'),
+                                      ('State_cleaned', 'LikesACS'),
+                                      ('LikesACS', 'UsingMissionInsite'),
+                                      ('TWA_grouped', 'CongregantUsers_grouped'),
+                                      ('LikesACS', 'UsingOnlineGiving'),
+                                      ('LikesACS', 'CongregantUsers_grouped')])
+
     # bn.check_model()
     bayesian_networks.append(bn)
 
@@ -109,19 +108,18 @@ for i in range(K):
             false_positives.append(client_ID)
     risky_clients.append(false_positives)
     validations.append(np.array(validation))
-#  rc_sizes is the number of fasle negatives in each testing group which we use in an error computation later.
+#  rc_sizes is the number of false negatives in each testing group which we use in an error computation later.
 rc_sizes = np.array([len(lst) for lst in risky_clients])
 # data_on_risky_clients = df.loc[df['ID'].isin(risky_clients)]
 
 
-############################################  ERROR CALCULATION ############################################# 
+"""                             ERROR CALCULATION                           """
 num_correct_predictions = np.array([np.sum(validation) for validation in validations])
 group_prediction_accuracies = num_correct_predictions / test_group_sizes
 false_negatives_not_counted = num_correct_predictions / (test_group_sizes - rc_sizes)
 mean_fnnc = np.mean(false_negatives_not_counted)
-#############################################################################################################
 
-############################################  REPORT PRINTING  ##############################################
+"""                             REPORT PRINTING                             """
 std_dev = np.std(group_prediction_accuracies)
 total_accuracy = np.sum(group_prediction_accuracies) / K
 end = time()
@@ -141,4 +139,3 @@ with open('RiskyClients.txt', 'a') as file:
     file.write(f'\n\n{str(risky_clients)}')
 with open('/home/zach/Desktop/new_BN_testing.txt', 'a') as file:
     file.write('\n\n' + report)
-#############################################################################################################
