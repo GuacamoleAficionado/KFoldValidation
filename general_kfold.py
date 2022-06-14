@@ -60,7 +60,7 @@ for i in range(K):
                                       # ('Product', 'LikesACS'),
                                       # ('State_cleaned', 'LikesACS'),
                                       # ('LikesACS', 'UsingMissionInsite'),
-                                      # ('TWA_grouped', 'CongregantUsers_grouped'),
+                                      ('TWA_grouped', 'CongregantUsers_grouped'),
                                       # ('LikesACS', 'UsingOnlineGiving'),
                                       ('LikesACS', 'CongregantUsers_grouped')])
 
