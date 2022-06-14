@@ -57,11 +57,11 @@ of the associated testing group and compare its max likelihood prediction agains
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'LikesACS'),
-                                      ('Product', 'LikesACS'),
-                                      ('State_cleaned', 'LikesACS'),
-                                      ('LikesACS', 'UsingMissionInsite'),
-                                      ('TWA_grouped', 'CongregantUsers_grouped'),
-                                      ('LikesACS', 'UsingOnlineGiving'),
+                                      # ('Product', 'LikesACS'),
+                                      # ('State_cleaned', 'LikesACS'),
+                                      # ('LikesACS', 'UsingMissionInsite'),
+                                      # ('TWA_grouped', 'CongregantUsers_grouped'),
+                                      # ('LikesACS', 'UsingOnlineGiving'),
                                       ('LikesACS', 'CongregantUsers_grouped')])
 
     # bn.check_model()
