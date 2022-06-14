@@ -57,12 +57,13 @@ of the associated testing group and compare its max likelihood prediction agains
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'LikesACS'),
-                                      # ('Product', 'LikesACS'),
-                                      # ('State_cleaned', 'LikesACS'),
-                                      # ('LikesACS', 'UsingMissionInsite'),
-                                      ('TWA_grouped', 'CongregantUsers_grouped'),
-                                      # ('LikesACS', 'UsingOnlineGiving'),
-                                      ('LikesACS', 'CongregantUsers_grouped')])
+                                      ('Product', 'LikesACS'),
+                                      ('State_cleaned', 'LikesACS'),
+                                      ('MissingValues', 'LikesACS'),
+                                      ('LikesACS', 'Timeline'),
+                                      ('LikesACS', 'UsingMissionInsite'),
+                                      ('LikesACS', 'UsingPathways'),
+                                      ('LikesACS', 'UsingOnlineGiving')])
 
     # bn.check_model()
     bayesian_networks.append(bn)
@@ -92,21 +93,20 @@ validations = []
 risky_clients = []
 for i in range(K):
     validation = []
-    false_positives = []
+    false_negatives = []
     for j in range(test_group_sizes[i]):
         #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
         #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
         prediction = fq[i].loc[tuple(state_instantiation.values)]['0_y']
-        # 'client_ID' is the ID in the dataset that refers to the client about whom we are currently making a
-        # prediction.
-        client_ID = test_groups[i].iloc[j]['ID']
         #  'actual_target_value' is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
         validation.append(prediction == actual_target_value)
         if not prediction and actual_target_value:
-            false_positives.append(client_ID)
-    risky_clients.append(false_positives)
+            # client_ID - ID in data set of client about whom we are making a prediction.
+            client_ID = test_groups[i].iloc[j]['ID']
+            false_negatives.append(client_ID)
+    risky_clients.append(false_negatives)
     validations.append(np.array(validation))
 #  rc_sizes is the number of false negatives in each testing group which we use in an error computation later.
 rc_sizes = np.array([len(lst) for lst in risky_clients])
@@ -116,17 +116,20 @@ rc_sizes = np.array([len(lst) for lst in risky_clients])
 """                             ERROR CALCULATION                           """
 num_correct_predictions = np.array([np.sum(validation) for validation in validations])
 group_prediction_accuracies = num_correct_predictions / test_group_sizes
-false_negatives_not_counted = num_correct_predictions / (test_group_sizes - rc_sizes)
-mean_fnnc = np.mean(false_negatives_not_counted)
+group_prediction_accuracies_fn = num_correct_predictions / (test_group_sizes - rc_sizes)
+mean_fn = np.mean(group_prediction_accuracies_fn)
+std_fn = np.std(group_prediction_accuracies_fn)
+mean = np.mean(group_prediction_accuracies)
+std = np.std(group_prediction_accuracies)
+
 
 """                             REPORT PRINTING                             """
-std_dev = np.std(group_prediction_accuracies)
-total_accuracy = np.sum(group_prediction_accuracies) / K
 end = time()
 bn = bayesian_networks[0]
-report = f'Prediction Accuracy : {round(total_accuracy, 5)}\n' \
-         f'Accuracy without "false negatives" : {round(mean_fnnc, 5)}\n' \
-         f'Standard Deviation : {round(std_dev, 5)}\n' \
+report = f'Prediction Accuracy : {round(mean, 5)}\n' \
+         f'Standard Deviation : {round(std, 5)}\n' \
+         f'Accuracy without "false negatives" : {round(mean_fn, 5)}\n' \
+         f'Standard Deviation without "false negatives : {round(std_fn, 5)}\n' \
          f'Execution Time : {round(((end - begin) / 60), 2)} minutes\n' \
          f'Nodes : {bn.nodes}\n' \
          f'Edges : {bn.edges}\n' \
