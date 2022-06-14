@@ -2,9 +2,10 @@
 Author        : Zach Seiss
 Email         : zseiss2997@gmail.com
 Date Created  : May 31, 2022
-Last Update   : June 5, 2022
+Last Update   : June 13, 2022
 """
 
+from functools import reduce
 import numpy as np
 import pandas as pd
 import math
@@ -56,59 +57,27 @@ def make_cpd(data_frame, target, *givens):
     all_variables = list(givens) + [target]
     df = data_frame[all_variables]
     grouped = df.groupby(list(givens))
-    val_counts = grouped[target].value_counts().unstack(fill_value=0).stack()
-    count = grouped[target].count().unstack(fill_value=0).stack()
-    myObject: pd.Series = val_counts.divide(count)
+    val_counts = grouped[target].value_counts()
+    count = grouped[target].count()
+    my_object = val_counts / count
     '''
     We need to collect the Series objects that make up the DataFrame we're
     using to make the CPT.  This is overly complicated but it is due to
     an obnoxious behaviour of pandas which will be elaborated shortly.
     '''
-
     series = [sorted(df.iloc[:, i].unique()) for i in range(len(df.columns))]
 
     '''
-    We need the Series objects because pandas exhibits a particular behaviour
-    in which the rows of a groupby object that are not 'instantiated'
-    simply get dropped.  This behaviour is absolutely not
-    what we want and there is no simple argument that we can pass to the the 
-    groupby method to change it.  The solution we came up with is to reindex
-    each groupby object with the cartesian product of all the series' which
-    make up that particular DataFrame object.
+    We achieve two things by reindexing (below)
     '''
     val_counts_multi_index = pd.MultiIndex.from_product(series)
-    myObject = myObject.reindex(val_counts_multi_index, fill_value=0)
-    unprocessed_cpd = myObject.to_numpy()
-
-
-    '''
-    For some reason if you use a multi-index with only a single level to
-    reindex a series the values all get switched to Nan so to counteract 
-    this we check the levels in the multi-index and change it to a standard
-    list if there is only a single level. 
-    '''
-    # counts_multi_index = pd.MultiIndex.from_product(series[:-1])
-    # counts_multi_index = counts_multi_index if counts_multi_index.nlevels > 1 \
-    #     else counts_multi_index.levels[0]
-    # counts = counts.reindex(counts_multi_index, fill_value=0)
-    # # print(val_counts, '\n', counts)
-    # print(val_counts/counts)
-    # print('HELLO.')
-    # exit()
-    #
-    # '''
-    # After reindexing, for some reason, we need to modify 'counts' manually
-    # in order to make the division of val_counts by counts work properly.
-    # We might look into why this is if we get time.
-    # '''
-    # target_variable_cardinality = len(df[target].unique())
-    # arr = np.array(val_counts / np.repeat(counts.values, target_variable_cardinality))
+    my_object = my_object.reindex(val_counts_multi_index, fill_value=0)
 
     '''
     'unprocessed_cpd' is the conditional probability distribution as a flat list.  We need to process
     it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
     '''
-    # unprocessed_cpd = np.nan_to_num(arr)
+    unprocessed_cpd = my_object.to_numpy()
 
     '''
     total_states_of_givens is the product of the number of states of all the 'given' variables in the space
@@ -121,33 +90,28 @@ def make_cpd(data_frame, target, *givens):
     cpt = np.array(np.split(unprocessed_cpd, total_states_of_givens)).T
 
     '''  Now we check to see if any of the columns of the CPT are invalid.  
-         This particular solution only works when the target variable is binary.
-         That's fine for our project but to get more general would require 
-         some thought.'''
-         
-    '''  It might seem here that rather than use a logical_and operation we
-         should simply check to see that cpt[0] + cpt[1] == 1, that is, the
-         columns of the CPT sum to 1.  However, we specifically want to look
+         It might seem here that we
+         should check to see that the
+         columns of the CPT all sum to 1.  However, we specifically want to look
          for the case where the sum of the column is zero.  If there is a 
          case where 0 < sum(column) < 1 then that would be indicative of a
          fundamentally different kind of error and we want the interpreter
          to raise an Exception to notify us
     '''
-    problem_cols = (np.logical_and(cpt[0] == cpt[1], cpt[0] == 0))
+    num_rows = len(cpt)
+    problem_cols = reduce(lambda x, y: x + y, [cpt[i] for i in range(num_rows)]) == 0
     if np.any(problem_cols):
         problem_index = [i for i in range(problem_cols.size) if problem_cols[i]]
         num_problems = len(problem_index)
         num_cols = np.shape(cpt)[1]
-        avg_zeroth_row = np.sum(cpt[0]) / (num_cols - num_problems)
-        avg_first_row = np.sum(cpt[1]) / (num_cols - num_problems)
-        cpt[0][problem_index] = avg_zeroth_row
-        cpt[1][problem_index] = avg_first_row
-
+        row_avgs = [np.sum(cpt[i] / (num_cols - num_problems))
+                    for i in range(num_rows)]
+        for i in range(num_rows):
+            cpt[i][problem_index] = row_avgs[i]
     return cpt
-
 
 #  Example ___________________________________________________________________
 
-data = pd.read_csv('ACST_Cust_Sum.csv')
-my_cpd = make_cpd(data, 'CongregantUsers_grouped', 'TWA_grouped', 'LikesACS')
-print(my_cpd)
+# data = pd.read_csv('ACST_Cust_Sum.csv')
+# my_cpd = make_cpd(data, 'CongregantUsers_grouped', 'TWA_grouped', 'LikesACS')
+# print(my_cpd)
