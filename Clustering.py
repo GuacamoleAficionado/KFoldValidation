@@ -36,7 +36,8 @@ kmeans_kwargs = {
 kmeans = KMeans(n_clusters=4, **kmeans_kwargs)
 kmeans.fit(feat)
 print(get_partitions(kmeans, congregant_users))
-exit()
+
+
 sse = []
 for k in range(1, 11):
     kmeans = KMeans(n_clusters=k, **kmeans_kwargs)
@@ -48,4 +49,5 @@ plt.plot(range(1, 11), sse)
 plt.xticks(range(1, 11))
 plt.xlabel("Number of Clusters")
 plt.ylabel("SSE")
+plt.title('CongregantUsers')
 plt.show()

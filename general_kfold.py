@@ -57,13 +57,15 @@ of the associated testing group and compare its max likelihood prediction agains
 bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'LikesACS'),
-                                      ('Product', 'LikesACS'),
-                                      ('State_cleaned', 'LikesACS'),
+                                      ('Party', 'LikesACS'),
                                       ('MissingValues', 'LikesACS'),
+                                      ('Product', 'LikesACS'),
                                       ('LikesACS', 'Timeline'),
+                                      ('LikesACS', 'UsingOnlineGiving'),
                                       ('LikesACS', 'UsingMissionInsite'),
                                       ('LikesACS', 'UsingPathways'),
-                                      ('LikesACS', 'UsingOnlineGiving')])
+                                      ('LikesACS', 'UsingAccounting'),
+                                      ('LikesACS', 'CongregantUsers_grouped')])
 
     # bn.check_model()
     bayesian_networks.append(bn)
@@ -90,26 +92,34 @@ fq = fast_query(bayesian_networks,
                 df,
                 TARGET_VARIABLE)
 validations = []
-risky_clients = []
+high_risk_group = []
+moderate_risk_group = []
+false_negatives = []
 for i in range(K):
     validation = []
-    false_negatives = []
+    false_negative_lst = []
     for j in range(test_group_sizes[i]):
         #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
         #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
+        client_ID = test_groups[i].iloc[j]['ID']
         prediction = fq[i].loc[tuple(state_instantiation.values)]['0_y']
+        probability_likes_acs = 1 - prediction
         #  'actual_target_value' is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
-        validation.append(prediction == actual_target_value)
-        if not prediction and actual_target_value:
+        if (probability_likes_acs < .53) and (probability_likes_acs > .5) and actual_target_value:
+            moderate_risk_group.append((client_ID, probability_likes_acs))
+        validation.append((probability_likes_acs > .5) == actual_target_value)
+        if not (probability_likes_acs > .5) and actual_target_value:
             # client_ID - ID in data set of client about whom we are making a prediction.
-            client_ID = test_groups[i].iloc[j]['ID']
-            false_negatives.append(client_ID)
-    risky_clients.append(false_negatives)
+            false_negative_lst.append(client_ID)
+            high_risk_group.append((client_ID, probability_likes_acs))
+    false_negatives.append(false_negative_lst)
     validations.append(np.array(validation))
+with open('moderate_risk.txt', 'w') as f:
+    f.write(str(moderate_risk_group))
 #  rc_sizes is the number of false negatives in each testing group which we use in an error computation later.
-rc_sizes = np.array([len(lst) for lst in risky_clients])
+rc_sizes = np.array([len(lst) for lst in false_negatives])
 # data_on_risky_clients = df.loc[df['ID'].isin(risky_clients)]
 
 
@@ -129,7 +139,7 @@ bn = bayesian_networks[0]
 report = f'Prediction Accuracy : {round(mean, 5)}\n' \
          f'Standard Deviation : {round(std, 5)}\n' \
          f'Accuracy without "false negatives" : {round(mean_fn, 5)}\n' \
-         f'Standard Deviation without "false negatives : {round(std_fn, 5)}\n' \
+         f'Standard Deviation without "false negatives" : {round(std_fn, 5)}\n' \
          f'Execution Time : {round(((end - begin) / 60), 2)} minutes\n' \
          f'Nodes : {bn.nodes}\n' \
          f'Edges : {bn.edges}\n' \
@@ -137,8 +147,8 @@ report = f'Prediction Accuracy : {round(mean, 5)}\n' \
          f'Out Degree : {bn.out_degree}\n' \
          f'States : {bn.states}'
 print(report)
-with open('RiskyClients.txt', 'a') as file:
+with open('RiskyClients.txt', 'w') as file:
     file.write(f'\n\n\n{bn.edges}')
-    file.write(f'\n\n{str(risky_clients)}')
+    file.write(f'\n\n{str(high_risk_group)}')
 with open('/home/zach/Desktop/new_BN_testing.txt', 'a') as file:
     file.write('\n\n' + report)

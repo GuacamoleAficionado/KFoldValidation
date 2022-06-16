@@ -51,8 +51,9 @@ def fast_query(bns: list, environment_variables: list, data_frame: pd.DataFrame,
                 {v: env_map[v][s] for v, s in zip(environment_variables,
                                                   query_evidence_table.loc[j][0])}
             inference = inferences[0].query([target], query_evidence, show_progress=False)
-            query_evidence_table.loc[j][0] = inference.values[0] < .5
+            query_evidence_table.loc[j][0] = inference.values[0]    # < .5
         mymap = pd.DataFrame(range(len(multi_index)), index=multi_index_copy)
         quick_lookup = pd.merge(mymap, query_evidence_table, left_on=mymap.columns[0], right_index=True)
         quick_lookup_tables.append(quick_lookup)
+
     return quick_lookup_tables

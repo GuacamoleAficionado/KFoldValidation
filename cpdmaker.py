@@ -47,7 +47,8 @@ def make_cpd(data_frame, target, *givens):
              Without sorting and reindexing the Series object that represents the 
              the states of the environment variable, we will get a sort by value
              counts and this will cause miscalculation further down the line.'''
-        sorted_index = sorted(data_frame[target].value_counts().index)
+
+        sorted_index = sorted(data_frame[target].unique())
         sorted_series = data_frame[target].value_counts().reindex(sorted_index)
         return np.expand_dims((sorted_series / data_frame[target].count()), axis=1)
 
@@ -65,12 +66,12 @@ def make_cpd(data_frame, target, *givens):
     using to make the CPT.  This is overly complicated but it is due to
     an obnoxious behaviour of pandas which will be elaborated shortly.
     '''
-    series = [sorted(df.iloc[:, i].unique()) for i in range(len(df.columns))]
+    series_of_df = [sorted(df.iloc[:, i].unique()) for i in range(len(df.columns))]
 
     '''
     We achieve two things by reindexing (below)
     '''
-    val_counts_multi_index = pd.MultiIndex.from_product(series)
+    val_counts_multi_index = pd.MultiIndex.from_product(series_of_df)
     my_object = my_object.reindex(val_counts_multi_index, fill_value=0)
 
     '''
@@ -113,5 +114,5 @@ def make_cpd(data_frame, target, *givens):
 #  Example ___________________________________________________________________
 
 # data = pd.read_csv('ACST_Cust_Sum.csv')
-# my_cpd = make_cpd(data, 'CongregantUsers_grouped', 'TWA_grouped', 'LikesACS')
+# my_cpd = make_cpd(data, 'TWA_grouped')
 # print(my_cpd)

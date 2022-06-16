@@ -16,20 +16,9 @@ def make_bn(training_group, edges: list):
     #  The ith element of cardinalities is the cardinality of nodes[i].
     cardinalities = [len(training_group[node].unique()) for node in nodes]
 
-    # node_to_card maps each node to its cardinality
-    node_to_card = {node: card for node, card in zip(nodes, cardinalities)}
+    #  The ith element of parent_cards is an ordered list of the cardinalities of the parents of nodes[i]
+    parent_cards = [[cardinalities[nodes.index(parent)] for parent in parents_of_node[i]] for i in range(len(nodes))]
 
-    parent_cardinalities = []
-    for i in range(len(nodes)):
-        cards = []
-        for parent in parents_of_node[i]:
-            if parent is None:
-                cards += [None]
-                break
-            cards += [node_to_card[parent]]
-        parent_cardinalities += [cards]
-
-    '''  Let's make the BN  '''
     bn = BayesianNetwork(edges)
     for i in range(len(nodes)):
         bn.add_cpds(
@@ -37,5 +26,5 @@ def make_bn(training_group, edges: list):
                        cardinalities[i],
                        values=make_cpd(training_group, *target_and_givens[i]),
                        evidence=parents_of_node[i],
-                       evidence_card=parent_cardinalities[i]))
+                       evidence_card=parent_cards[i]))
     return bn
