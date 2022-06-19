@@ -70,4 +70,4 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
         quick_lookup_tables.append(quick_lookup)
 
     num_queries = sum(len(e) for e in quick_lookup_tables)
-    return quick_lookup_tables, num_queries
+    return quick_lookup_tables, num_queries, type(inferences[0])

@@ -93,11 +93,11 @@ The function fast_query will query all of the bayesian networks with the whole e
 map and map the queries to their respective outputs, reducing computation time by 
 eliminating repeat calculations.
 '''
-fq, num_queries = fast_query(bayesian_networks,
-                             test_group_indexes,
-                             environment_variables,
-                             df,
-                             TARGET_VARIABLE)
+fq, num_queries, method_used = fast_query(bayesian_networks,
+                                          test_group_indexes,
+                                          environment_variables,
+                                          df,
+                                          TARGET_VARIABLE)
 print(f'number of queries run : {num_queries}\n')
 
 validations = []
@@ -151,6 +151,7 @@ date_stamp = datetime.now()
 end = time()
 bn = bayesian_networks[0]
 report = f'###################################################      {date_stamp}      ##################################################\n\n'\
+         f'Method Used : {method_used}\n' \
          f'Prediction Accuracy : {round(mean, 5)}\n' \
          f'Standard Deviation : {round(std, 5)}\n' \
          f'Accuracy without "false negatives" : {round(mean_fn, 5)}\n' \
@@ -164,12 +165,12 @@ report = f'###################################################      {date_stamp}
          f'Out Degree : {bn.out_degree}\n' \
          f'States : {bn.states}\n\n\n\n'
 print(report)
-# with open('moderate_risk.txt', 'a') as file:
-#     file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
-#     file.write(str(moderate_risk_group))
-# with open('RiskyClients.txt', 'a') as file:
-#     file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
-#     file.write(f'{bn.edges}\n')
-#     file.write(f'{str(high_risk_group)}')
-# with open('/home/zach/Desktop/BN_testing_new_query_evidence_style.txt', 'a') as file:
-#     file.write('\n\n' + report)
+with open('moderate_risk.txt', 'a') as file:
+    file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
+    file.write(str(moderate_risk_group))
+with open('RiskyClients.txt', 'a') as file:
+    file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
+    file.write(f'{bn.edges}\n')
+    file.write(f'{str(high_risk_group)}')
+with open('/home/zach/Desktop/BN_testing_new_query_evidence_style.txt', 'a') as file:
+    file.write('\n\n' + report)
