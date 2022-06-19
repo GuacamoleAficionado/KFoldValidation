@@ -1,3 +1,9 @@
+"""
+Author       :    Zach Seiss
+Email        :    zseiss2997@g.fmarion.edu
+Written      :    June 1, 2022
+Last Update  :    June 16, 2022
+"""
 from pgmpy.models import BayesianNetwork
 from pgmpy.factors.discrete.CPD import TabularCPD
 from cpdmaker import make_cpd
@@ -5,6 +11,7 @@ from cpdmaker import make_cpd
 
 def make_bn(training_group, edges: list):
     #  This line gives us a list of all the nodes in the network.
+
     nodes = list({edges[i][j] for i in range(len(edges)) for j in range(len(edges[i]))})
 
     #  The ith set in parents_of_node contains the elements that have a directed edge to the ith element in nodes

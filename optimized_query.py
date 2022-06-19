@@ -2,10 +2,11 @@
 Author       :    Zach Seiss
 Email        :    zseiss2997@g.fmarion.edu
 Written      :    June 4, 2022
-Last Update  :    June 5, 2022
+Last Update  :    June 18, 2022
 """
 import pandas as pd
 from pgmpy.inference.ExactInference import VariableElimination
+from pgmpy.inference.ExactInference import BeliefPropagation
 
 
 def environment_map(data_frame, universe):
@@ -36,24 +37,35 @@ def state_mapping(state_space):
     return dict([(b, a) for a, b in enumerate(sorted(state_space))])
 
 
-def fast_query(bns: list, environment_variables: list, data_frame: pd.DataFrame, target: str):
-    inferences = [VariableElimination(bn) for bn in bns]
+def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_frame: pd.DataFrame, target: str):
+    inferences = [BeliefPropagation(bn) for bn in bns]
     env_map = environment_map(data_frame, environment_variables)
-    multi_index = data_frame.groupby(environment_variables[:-1])[environment_variables[-1]]\
-        .value_counts().index
     quick_lookup_tables = []
     for i in range(len(inferences)):
-        #  You have to use .copy() here inside the loop to get a shallow copy.
-        multi_index_copy = multi_index.copy()
-        query_evidence_table = pd.DataFrame(multi_index_copy)
+        df = data_frame.iloc[test_grp_indexes[i]]
+        groupby = df.groupby(environment_variables[:-1])[environment_variables[-1]]
+        multi_index = groupby.value_counts().index
+        query_evidence_table = pd.DataFrame(multi_index)
+
         for j in range(query_evidence_table.size):
             query_evidence = \
                 {v: env_map[v][s] for v, s in zip(environment_variables,
-                                                  query_evidence_table.loc[j][0])}
-            inference = inferences[0].query([target], query_evidence, show_progress=False)
-            query_evidence_table.loc[j][0] = inference.values[0]    # < .5
-        mymap = pd.DataFrame(range(len(multi_index)), index=multi_index_copy)
+                                                  query_evidence_table.loc[j][0])
+                 if s != 'N'}
+            try:
+                inference = inferences[i].query([target], query_evidence, show_progress=True).copy()
+                query_evidence_table.loc[j][0] = inference.values[1]
+            except IndexError as e:
+                """ For the time being if this happens we will predict 'satisfied.' """
+                query_evidence_table.loc[j][0] = 1.0
+                print(e)
+            except ValueError as e:
+                print(f'query_evidence : {query_evidence}')
+                print(e)
+
+        mymap = pd.DataFrame(range(len(multi_index)), index=multi_index)
         quick_lookup = pd.merge(mymap, query_evidence_table, left_on=mymap.columns[0], right_index=True)
         quick_lookup_tables.append(quick_lookup)
 
-    return quick_lookup_tables
+    num_queries = sum(len(e) for e in quick_lookup_tables)
+    return quick_lookup_tables, num_queries

@@ -2,7 +2,7 @@
 Author        : Zach Seiss
 Email         : zseiss2997@gmail.com
 Date Created  : May 31, 2022
-Last Update   : June 13, 2022
+Last Update   : June 18, 2022
 """
 
 from functools import reduce
@@ -49,8 +49,8 @@ def make_cpd(data_frame, target, *givens):
              counts and this will cause miscalculation further down the line.'''
 
         sorted_index = sorted(data_frame[target].unique())
-        sorted_series = data_frame[target].value_counts().reindex(sorted_index)
-        return np.expand_dims((sorted_series / data_frame[target].count()), axis=1)
+        sorted_series = data_frame[target].value_counts(normalize=True).reindex(sorted_index)
+        return np.expand_dims(sorted_series, axis=1)
 
     '''
     Otherwise we need to do some extra processing. 
@@ -58,27 +58,28 @@ def make_cpd(data_frame, target, *givens):
     all_variables = list(givens) + [target]
     df = data_frame[all_variables]
     grouped = df.groupby(list(givens))
-    val_counts = grouped[target].value_counts()
-    count = grouped[target].count()
-    my_object = val_counts / count
+    val_counts = grouped[target].value_counts(normalize=True)
+
     '''
     We need to collect the Series objects that make up the DataFrame we're
     using to make the CPT.  This is overly complicated but it is due to
     an obnoxious behaviour of pandas which will be elaborated shortly.
     '''
+    # debugging = [df.iloc[:, i].unique() for i in range(len(df.columns))]
+
     series_of_df = [sorted(df.iloc[:, i].unique()) for i in range(len(df.columns))]
 
     '''
     We achieve two things by reindexing (below)
     '''
-    val_counts_multi_index = pd.MultiIndex.from_product(series_of_df)
-    my_object = my_object.reindex(val_counts_multi_index, fill_value=0)
+    multi_index = pd.MultiIndex.from_product(series_of_df)
+    val_counts = val_counts.reindex(multi_index, fill_value=0)
 
     '''
     'unprocessed_cpd' is the conditional probability distribution as a flat list.  We need to process
     it to get it into the proper format to input into pgmpy's 'TabularCPD()' constructor.
     '''
-    unprocessed_cpd = my_object.to_numpy()
+    unprocessed_cpd = val_counts.to_numpy()
 
     '''
     total_states_of_givens is the product of the number of states of all the 'given' variables in the space
@@ -111,8 +112,9 @@ def make_cpd(data_frame, target, *givens):
             cpt[i][problem_index] = row_avgs[i]
     return cpt
 
+
 #  Example ___________________________________________________________________
 
-# data = pd.read_csv('ACST_Cust_Sum.csv')
+# data = pd.read_csv('ACST_Cust_Data.csv')
 # my_cpd = make_cpd(data, 'TWA_grouped')
 # print(my_cpd)
