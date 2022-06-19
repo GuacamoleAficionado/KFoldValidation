@@ -5,6 +5,7 @@ Written      :    June 4, 2022
 Last Update  :    June 18, 2022
 """
 import pandas as pd
+import copy
 from pgmpy.inference.ExactInference import VariableElimination
 from pgmpy.inference.ExactInference import BeliefPropagation
 
@@ -53,7 +54,8 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
                                                   query_evidence_table.loc[j][0])
                  if s != 'N'}
             try:
-                inference = inferences[i].query([target], query_evidence, show_progress=True).copy()
+                inference = copy.deepcopy(inferences[i])
+                inference = inference.query([target], query_evidence, show_progress=True)
                 query_evidence_table.loc[j][0] = inference.values[1]
             except IndexError as e:
                 """ For the time being if this happens we will predict 'satisfied.' """
