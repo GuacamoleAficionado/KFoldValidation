@@ -1,0 +1,380 @@
+
+
+###################################################      2022-06-19 10:44:55.885093      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.87784
+Standard Deviation : 0.01184
+Accuracy without "false negatives" : 0.91777
+Standard Deviation without "false negatives" : 0.00859
+Execution Time : 0.23 minutes
+The network was queried 722 times.  FastQuery saved 7366 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'TWA_with_CongregantUsers')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 1), ('TWA_with_CongregantUsers', 0)]
+States : {'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1]}
+
+
+
+
+
+###################################################      2022-06-19 10:46:06.860827      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.87784
+Standard Deviation : 0.01184
+Accuracy without "false negatives" : 0.91777
+Standard Deviation without "false negatives" : 0.00859
+Execution Time : 0.17 minutes
+The network was queried 722 times.  FastQuery saved 7366 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'TWA_with_CongregantUsers')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 1), ('TWA_with_CongregantUsers', 0)]
+States : {'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 10:47:34.368858      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.88044
+Standard Deviation : 0.01095
+Accuracy without "false negatives" : 0.91294
+Standard Deviation without "false negatives" : 0.00924
+Execution Time : 0.3 minutes
+The network was queried 1210 times.  FastQuery saved 6878 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 1), ('Party', 1), ('TWA_with_CongregantUsers', 0)]
+States : {'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2]}
+
+
+
+
+
+###################################################      2022-06-19 10:48:49.137827      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.88044
+Standard Deviation : 0.01095
+Accuracy without "false negatives" : 0.91294
+Standard Deviation without "false negatives" : 0.00924
+Execution Time : 0.45 minutes
+The network was queried 1210 times.  FastQuery saved 6878 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 1), ('Party', 1), ('TWA_with_CongregantUsers', 0)]
+States : {'Party': [0, 1, 2], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]}
+
+
+
+
+
+###################################################      2022-06-19 10:50:03.997268      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.87723
+Standard Deviation : 0.01261
+Accuracy without "false negatives" : 0.91712
+Standard Deviation without "false negatives" : 0.00954
+Execution Time : 0.37 minutes
+The network was queried 1210 times.  FastQuery saved 6878 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'Party'), ('Satisfied', 'TWA_with_CongregantUsers')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 1), ('Party', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 2), ('Party', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1], 'Party': [0, 1, 2], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]}
+
+
+
+
+
+###################################################      2022-06-19 10:54:30.834627      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.86882
+Standard Deviation : 0.01129
+Accuracy without "false negatives" : 0.90999
+Standard Deviation without "false negatives" : 0.00854
+Execution Time : 3.74 minutes
+The network was queried 5042 times.  FastQuery saved 3046 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'State_cleaned', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied'), ('State_cleaned', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('State_cleaned', 0), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 1), ('Party', 1), ('State_cleaned', 1), ('TWA_with_CongregantUsers', 0)]
+States : {'State_cleaned': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 10:58:00.932867      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.87785
+Standard Deviation : 0.01289
+Accuracy without "false negatives" : 0.9148
+Standard Deviation without "false negatives" : 0.00952
+Execution Time : 2.28 minutes
+The network was queried 5042 times.  FastQuery saved 3046 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'State_cleaned', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'State_cleaned'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('State_cleaned', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 2), ('Party', 1), ('State_cleaned', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'State_cleaned': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], 'Satisfied': [0, 1], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 11:00:30.170921      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.BeliefPropagation'>
+Prediction Accuracy : 0.92915
+Standard Deviation : 0.01012
+Accuracy without "false negatives" : 0.95854
+Standard Deviation without "false negatives" : 0.0071
+Execution Time : 2.04 minutes
+The network was queried 4489 times.  FastQuery saved 3599 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 3), ('Party', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'Party': [0, 1, 2], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 11:02:47.338467      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92915
+Standard Deviation : 0.01012
+Accuracy without "false negatives" : 0.95854
+Standard Deviation without "false negatives" : 0.0071
+Execution Time : 1.04 minutes
+The network was queried 4489 times.  FastQuery saved 3599 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 3), ('Party', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2]}
+
+
+
+
+
+###################################################      2022-06-19 11:05:47.319606      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.86128
+Standard Deviation : 0.01441
+Accuracy without "false negatives" : 0.96398
+Standard Deviation without "false negatives" : 0.007
+Execution Time : 1.71 minutes
+The network was queried 5616 times.  FastQuery saved 2472 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'SumOptions_grouped', 'UsingOnlineGiving', 'UsingMissionInsite', 'UsingPathways', 'UsingAccounting', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingMissionInsite'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('UsingOnlineGiving', 1), ('UsingMissionInsite', 1), ('UsingPathways', 1), ('UsingAccounting', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 7), ('Party', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('UsingOnlineGiving', 0), ('UsingMissionInsite', 0), ('UsingPathways', 0), ('UsingAccounting', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'Party': [0, 1, 2], 'UsingOnlineGiving': [0, 1], 'Satisfied': [0, 1], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'UsingAccounting': [0, 1], 'UsingMissionInsite': [0, 1], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'UsingPathways': [0, 1], 'YearsOwned': [0, 1, 2, 3, 4, 5]}
+
+
+
+
+
+###################################################      2022-06-19 11:09:09.787850      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92013
+Standard Deviation : 0.01022
+Accuracy without "false negatives" : 0.96173
+Standard Deviation without "false negatives" : 0.00638
+Execution Time : 1.39 minutes
+The network was queried 4917 times.  FastQuery saved 3171 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'UsingOnlineGiving', 'UsingMissionInsite', 'UsingPathways', 'UsingAccounting', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingMissionInsite'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingMissionInsite', 1), ('UsingPathways', 1), ('UsingAccounting', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 6), ('Party', 1), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingMissionInsite', 0), ('UsingPathways', 0), ('UsingAccounting', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'UsingPathways': [0, 1], 'UsingOnlineGiving': [0, 1], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Party': [0, 1, 2], 'UsingMissionInsite': [0, 1], 'UsingAccounting': [0, 1]}
+
+
+
+
+
+###################################################      2022-06-19 11:16:26.223359      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92953
+Standard Deviation : 0.00933
+Accuracy without "false negatives" : 0.95917
+Standard Deviation without "false negatives" : 0.00694
+Execution Time : 1.17 minutes
+The network was queried 4489 times.  FastQuery saved 3599 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers', 'TWA_grouped', 'CongregantUsers_grouped']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1), ('TWA_grouped', 1), ('CongregantUsers_grouped', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('Party', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 0)]
+States : {'Party': [0, 1, 2], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'Satisfied': [0, 1], 'TWA_grouped': [0, 1, 2, 3], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 11:20:10.086982      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.87994
+Standard Deviation : 0.01334
+Accuracy without "false negatives" : 0.9691
+Standard Deviation without "false negatives" : 0.00755
+Execution Time : 1.41 minutes
+The network was queried 4820 times.  FastQuery saved 3268 redundant queries.
+Error count : 1
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'YearsOwned', 'MissingValues', 'SumOptions_grouped', 'TWA_with_CongregantUsers', 'TWA_grouped', 'CongregantUsers_grouped']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'MissingValues'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('Party', 0), ('YearsOwned', 1), ('MissingValues', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1), ('TWA_grouped', 1), ('CongregantUsers_grouped', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 6), ('Party', 1), ('YearsOwned', 0), ('MissingValues', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 0)]
+States : {'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'TWA_grouped': [0, 1, 2, 3], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'YearsOwned': [0, 1, 2, 3, 4, 5]}
+
+
+
+
+
+###################################################      2022-06-19 11:26:13.027415      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.87685
+Standard Deviation : 0.01351
+Accuracy without "false negatives" : 0.96831
+Standard Deviation without "false negatives" : 0.00816
+Execution Time : 5.15 minutes
+The network was queried 4820 times.  FastQuery saved 3268 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'MissingValues', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers', 'TWA_grouped', 'CongregantUsers_grouped']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied'), ('MissingValues', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('MissingValues', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1), ('TWA_grouped', 1), ('CongregantUsers_grouped', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('Party', 1), ('MissingValues', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 0)]
+States : {'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'Party': [0, 1, 2], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'TWA_grouped': [0, 1, 2, 3], 'CongregantUsers_grouped': [0, 1, 2, 3, 4]}
+
+
+
+
+
+###################################################      2022-06-19 11:32:31.408552      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.87784
+Standard Deviation : 0.01264
+Accuracy without "false negatives" : 0.969
+Standard Deviation without "false negatives" : 0.00827
+Execution Time : 4.97 minutes
+The network was queried 4820 times.  FastQuery saved 3268 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'MissingValues', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied'), ('MissingValues', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('MissingValues', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 3), ('Party', 1), ('MissingValues', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'Party': [0, 1, 2], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+
+
+
+###################################################      2022-06-19 11:44:15.719789      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92495
+Standard Deviation : 0.01397
+Accuracy without "false negatives" : 0.9576
+Standard Deviation without "false negatives" : 0.00709
+Execution Time : 2.96 minutes
+The network was queried 5390 times.  FastQuery saved 2698 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('Product', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 3), ('Party', 1), ('Product', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1], 'Party': [0, 1, 2], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'Product': [0, 1, 2, 3]}
+
+
+
+
+
+###################################################      2022-06-19 11:47:48.159296      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92347
+Standard Deviation : 0.0124
+Accuracy without "false negatives" : 0.95729
+Standard Deviation without "false negatives" : 0.00681
+Execution Time : 3.12 minutes
+The network was queried 5390 times.  FastQuery saved 2698 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers', 'TWA_grouped', 'CongregantUsers_grouped']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('Product', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1), ('TWA_grouped', 1), ('CongregantUsers_grouped', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('Party', 1), ('Product', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 0)]
+States : {'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'TWA_grouped': [0, 1, 2, 3], 'Party': [0, 1, 2], 'Product': [0, 1, 2, 3], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'SumOptions_grouped': [0, 1, 2, 3, 4]}
+
+
+
+
+
+###################################################      2022-06-19 12:02:56.235388      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.90171
+Standard Deviation : 0.01175
+Accuracy without "false negatives" : 0.93932
+Standard Deviation without "false negatives" : 0.0069
+Execution Time : 11.29 minutes
+The network was queried 7671 times.  FastQuery saved 417 redundant queries.
+Error count : 3
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'State_cleaned', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Party', 'Satisfied'), ('Product', 'Satisfied'), ('State_cleaned', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 4), ('Party', 0), ('Product', 0), ('State_cleaned', 0), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 3), ('Party', 1), ('Product', 1), ('State_cleaned', 1), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0)]
+States : {'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'Satisfied': [0, 1], 'Party': [0, 1, 2], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'State_cleaned': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Product': [0, 1, 2, 3], 'YearsOwned': [0, 1, 2, 3, 4, 5]}
+
+
+
+
+
+###################################################      2022-06-19 17:15:01.237126      ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92953
+Standard Deviation : 0.00933
+Accuracy without "false negatives" : 0.95917
+Standard Deviation without "false negatives" : 0.00694
+Execution Time : 1.17 minutes
+The network was queried 4489 times.  FastQuery saved 3599 redundant queries.
+Error count : 3
+Nodes : ['DenominationalGroup', 'Satisfied', 'YearsOwned', 'SumOptions_grouped', 'TWA_with_CongregantUsers', 'TWA_grouped', 'CongregantUsers_grouped', 'Party']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'), ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 2), ('YearsOwned', 1), ('SumOptions_grouped', 1), ('TWA_with_CongregantUsers', 1), ('TWA_grouped', 1), ('CongregantUsers_grouped', 1), ('Party', 0)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('YearsOwned', 0), ('SumOptions_grouped', 0), ('TWA_with_CongregantUsers', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 0), ('Party', 1)]
+States : {'TWA_grouped': [0, 1, 2, 3], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'SumOptions_grouped': [0, 1, 2, 3, 4], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'TWA_with_CongregantUsers': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+
+
+

@@ -39,9 +39,10 @@ def state_mapping(state_space):
 
 
 def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_frame: pd.DataFrame, target: str):
-    inferences = [BeliefPropagation(bn) for bn in bns]
+    inferences = [VariableElimination(bn) for bn in bns]
     env_map = environment_map(data_frame, environment_variables)
     quick_lookup_tables = []
+    error_count = 0
     for i in range(len(inferences)):
         df = data_frame.iloc[test_grp_indexes[i]]
         groupby = df.groupby(environment_variables[:-1])[environment_variables[-1]]
@@ -60,9 +61,11 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
             except IndexError as e:
                 """ For the time being if this happens we will predict 'satisfied.' """
                 query_evidence_table.loc[j][0] = 1.0
+                error_count += 1
                 print(e)
             except ValueError as e:
                 print(f'query_evidence : {query_evidence}')
+                error_count += 1
                 print(e)
 
         mymap = pd.DataFrame(range(len(multi_index)), index=multi_index)
@@ -70,4 +73,4 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
         quick_lookup_tables.append(quick_lookup)
 
     num_queries = sum(len(e) for e in quick_lookup_tables)
-    return quick_lookup_tables, num_queries, type(inferences[0])
+    return quick_lookup_tables, num_queries, type(inferences[0]), error_count

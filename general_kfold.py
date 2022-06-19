@@ -57,24 +57,13 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
-                                      # ('Party', 'Satisfied'),
-                                      ('Satisfied', 'Product'),
-                                      ('Satisfied', 'Party'),
-                                      # ('State_cleaned', 'Satisfied'),
-                                      ('Satisfied', 'YearsOwned'),
-                                      ('Satisfied', 'MissingValues'),
-                                      ('Satisfied', 'SumOptions_grouped'),
-                                      # # ('Satisfied', 'UsingOnlineGiving'),
-                                      # # ('Satisfied', 'UsingMissionInsite'),
-                                      # # ('Satisfied', 'UsingPathways'),
-                                      # # ('Satisfied', 'UsingAccounting'),
-                                      ('Satisfied', 'TWA_with_CongregantUsers')
-                                      ])
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'),
+                                      ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'),
+                                      ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'),
+                                      ('Party', 'Satisfied')])
 
     # bn.check_model()
     bayesian_networks.append(bn)
-
 
 '''
 Now we have to create a VariableElimination object from each BayesianNetwork object in order
@@ -93,11 +82,11 @@ The function fast_query will query all of the bayesian networks with the whole e
 map and map the queries to their respective outputs, reducing computation time by 
 eliminating repeat calculations.
 '''
-fq, num_queries, method_used = fast_query(bayesian_networks,
-                                          test_group_indexes,
-                                          environment_variables,
-                                          df,
-                                          TARGET_VARIABLE)
+fq, num_queries, method_used, external_errors = fast_query(bayesian_networks,
+                                                           test_group_indexes,
+                                                           environment_variables,
+                                                           df,
+                                                           TARGET_VARIABLE)
 print(f'number of queries run : {num_queries}\n')
 
 validations = []
@@ -117,7 +106,7 @@ for i in range(K):
         #  'actual_target_value' is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
         try:
-            if (prediction < .53) and (prediction > .5) and actual_target_value:
+            if (prediction < .60) and (prediction > .5) and actual_target_value:
                 moderate_risk_group.append((client_ID, prediction))
             validation.append((prediction > .5) == actual_target_value)
             if not (round(prediction)) and actual_target_value:
@@ -128,6 +117,7 @@ for i in range(K):
             error_count += 1
             print(e)
         except TypeError as e:
+            error_count += 1
             print(prediction)
             print(e)
     false_negatives.append(false_negative_lst)
@@ -150,7 +140,7 @@ std = np.std(group_prediction_accuracies)
 date_stamp = datetime.now()
 end = time()
 bn = bayesian_networks[0]
-report = f'###################################################      {date_stamp}      ##################################################\n\n'\
+report = f'###################################################      {date_stamp}      ##################################################\n\n' \
          f'Method Used : {method_used}\n' \
          f'Prediction Accuracy : {round(mean, 5)}\n' \
          f'Standard Deviation : {round(std, 5)}\n' \
@@ -158,7 +148,7 @@ report = f'###################################################      {date_stamp}
          f'Standard Deviation without "false negatives" : {round(std_fn, 5)}\n' \
          f'Execution Time : {round(((end - begin) / 60), 2)} minutes\n' \
          f'The network was queried {num_queries} times.  FastQuery saved {len(df) - num_queries} redundant queries.\n' \
-         f'Error count : {error_count}\n' \
+         f'Error count : {error_count + external_errors}\n' \
          f'Nodes : {bn.nodes}\n' \
          f'Edges : {bn.edges}\n' \
          f'In Degree : {bn.in_degree}\n' \
@@ -166,11 +156,13 @@ report = f'###################################################      {date_stamp}
          f'States : {bn.states}\n\n\n\n'
 print(report)
 with open('moderate_risk.txt', 'a') as file:
-    file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
+    file.write(
+        f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
     file.write(str(moderate_risk_group))
 with open('RiskyClients.txt', 'a') as file:
-    file.write(f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
+    file.write(
+        f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
     file.write(f'{bn.edges}\n')
     file.write(f'{str(high_risk_group)}')
-with open('/home/zach/Desktop/BN_testing_new_query_evidence_style.txt', 'a') as file:
+with open('BN_testing_new_query_evidence_style.txt', 'a') as file:
     file.write('\n\n' + report)
