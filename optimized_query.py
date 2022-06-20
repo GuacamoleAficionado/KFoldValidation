@@ -6,6 +6,7 @@ Last Update  :    June 18, 2022
 """
 import pandas as pd
 import copy
+from tqdm import tqdm
 from pgmpy.inference.ExactInference import VariableElimination
 from pgmpy.inference.ExactInference import BeliefPropagation
 
@@ -49,14 +50,16 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
         multi_index = groupby.value_counts().index
         query_evidence_table = pd.DataFrame(multi_index)
 
-        for j in range(query_evidence_table.size):
+        for j in tqdm(range(query_evidence_table.size),
+                      desc=f'Testing group {i+1} of {len(inferences)} : ',
+                      colour='GREEN'):
             query_evidence = \
                 {v: env_map[v][s] for v, s in zip(environment_variables,
                                                   query_evidence_table.loc[j][0])
                  if s != 'N'}
             try:
                 inference = copy.deepcopy(inferences[i])
-                inference = inference.query([target], query_evidence, show_progress=True)
+                inference = inference.query([target], query_evidence, show_progress=False)
                 query_evidence_table.loc[j][0] = inference.values[1]
             except IndexError as e:
                 """ For the time being if this happens we will predict 'satisfied.' """

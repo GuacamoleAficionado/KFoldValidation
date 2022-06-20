@@ -10,14 +10,18 @@ import pandas as pd
 import random
 from datetime import datetime
 from time import time
+
 from bayes_net_model import make_bn
 from optimized_query import fast_query
+from get_client_spreadsheet import return_client_csv
 
 # we will define variables begin and end to keep track of program execution time
 begin = time()
 
 random.seed(0)
+DROP_CUTOFF = 20
 df = pd.read_csv('ACST_Cust_Data.csv')
+df = df.loc[df['MissingValues'] <= DROP_CUTOFF].reset_index()
 K = 10
 NUM_ROWS = len(df)
 TARGET_VARIABLE = 'Satisfied'
@@ -57,10 +61,24 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'),
-                                      ('Satisfied', 'SumOptions_grouped'), ('Satisfied', 'TWA_with_CongregantUsers'),
-                                      ('Satisfied', 'TWA_grouped'), ('Satisfied', 'CongregantUsers_grouped'),
-                                      ('Party', 'Satisfied')])
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
+                                      ('Party', 'Satisfied'),
+                                      ('TWA_grouped', 'Satisfied'),
+                                      ('TWA_grouped', 'CongregantUsers_grouped'),
+                                      ('Region', 'Satisfied'),
+                                      ('Product', 'Satisfied'),
+                                      ('Satisfied', 'YearsOwned'),
+                                      ('Satisfied', 'UsingAccounting'),
+                                      ('Satisfied', 'UsingBackGroundChecks'),
+                                      ('Satisfied', 'UsingCheckin'),
+                                      ('Satisfied', 'UsingMobileCheckin'),
+                                      ('Satisfied', 'UsingMinistrySmart'),
+                                      ('Satisfied', 'UsingRefreshWebsites'),
+                                      ('Satisfied', 'UsingOnlineGiving'),
+                                      ('Satisfied', 'UsingPathways'),
+                                      ('Satisfied', 'UsingMissionInsite'),
+                                      ('Satisfied', 'CongregantUsers_grouped'),
+                                      ])
 
     # bn.check_model()
     bayesian_networks.append(bn)
@@ -82,12 +100,16 @@ The function fast_query will query all of the bayesian networks with the whole e
 map and map the queries to their respective outputs, reducing computation time by 
 eliminating repeat calculations.
 '''
+
+# num_queries=0
+# method_used='uniform'
+# external_errors=0
+# file_name=''
 fq, num_queries, method_used, external_errors = fast_query(bayesian_networks,
                                                            test_group_indexes,
                                                            environment_variables,
                                                            df,
                                                            TARGET_VARIABLE)
-print(f'number of queries run : {num_queries}\n')
 
 validations = []
 high_risk_group = []
@@ -100,6 +122,7 @@ for i in range(K):
     for j in range(test_group_sizes[i]):
         #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
+
         #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
         client_ID = test_groups[i].iloc[j]['ID']
         prediction = fq[i].loc[tuple(state_instantiation.values)]['0_y']
@@ -129,8 +152,8 @@ rc_sizes = np.array([len(lst) for lst in false_negatives])
 
 """                             ERROR CALCULATION                           """
 num_correct_predictions = np.array([np.sum(validation) for validation in validations])
-group_prediction_accuracies = num_correct_predictions / test_group_sizes
-group_prediction_accuracies_fn = num_correct_predictions / (test_group_sizes - rc_sizes)
+group_prediction_accuracies = num_correct_predictions / (test_group_sizes - error_count)
+group_prediction_accuracies_fn = num_correct_predictions / (test_group_sizes - rc_sizes - error_count)
 mean_fn = np.mean(group_prediction_accuracies_fn)
 std_fn = np.std(group_prediction_accuracies_fn)
 mean = np.mean(group_prediction_accuracies)
@@ -140,7 +163,10 @@ std = np.std(group_prediction_accuracies)
 date_stamp = datetime.now()
 end = time()
 bn = bayesian_networks[0]
-report = f'###################################################      {date_stamp}      ##################################################\n\n' \
+file_name = return_client_csv(high_risk_lst=high_risk_group,
+                              moderate_risk_lst=moderate_risk_group,
+                              data_frame=df)
+report = f'###################################################      {file_name}      {date_stamp}      >{DROP_CUTOFF} MissingValues dropped!!!   ##################################################\n\n' \
          f'Method Used : {method_used}\n' \
          f'Prediction Accuracy : {round(mean, 5)}\n' \
          f'Standard Deviation : {round(std, 5)}\n' \
@@ -155,14 +181,7 @@ report = f'###################################################      {date_stamp}
          f'Out Degree : {bn.out_degree}\n' \
          f'States : {bn.states}\n\n\n\n'
 print(report)
-with open('moderate_risk.txt', 'a') as file:
-    file.write(
-        f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
-    file.write(str(moderate_risk_group))
-with open('RiskyClients.txt', 'a') as file:
-    file.write(
-        f'\n\n\n\n###################################################      {date_stamp}      ##################################################\n\n')
-    file.write(f'{bn.edges}\n')
-    file.write(f'{str(high_risk_group)}')
 with open('BN_testing_new_query_evidence_style.txt', 'a') as file:
     file.write('\n\n' + report)
+with open(f'Client_Spreadsheets/{file_name}/{file_name}.txt', 'w+') as file:
+    file.write(report)
