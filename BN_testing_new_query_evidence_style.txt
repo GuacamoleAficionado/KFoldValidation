@@ -1149,3 +1149,219 @@ States : {'Party': [0, 1, 2], 'UsingBackGroundChecks': [0, 1], 'Satisfied': [0, 
 
 
 
+
+
+###################################################      loud_cap      2022-06-20 15:29:34.078066      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92244
+Standard Deviation : 0.00779
+Accuracy without "false negatives" : 0.93122
+Standard Deviation without "false negatives" : 0.00642
+Execution Time : 37.34 minutes
+The network was queried 6972 times.  FastQuery saved 1116 redundant queries.
+Error count : 3
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'TWA_grouped', 'CongregantUsers_grouped', 'Region', 'Product', 'YearsOwned', 'UsingAccounting', 'UsingBackGroundChecks', 'UsingCheckin', 'UsingMobileCheckin', 'UsingMinistrySmart', 'UsingRefreshWebsites', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'UsingBackGroundChecks'), ('Satisfied', 'UsingCheckin'), ('Satisfied', 'UsingMobileCheckin'), ('Satisfied', 'UsingMinistrySmart'), ('Satisfied', 'UsingRefreshWebsites'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied'), ('TWA_grouped', 'Satisfied'), ('TWA_grouped', 'CongregantUsers_grouped'), ('Region', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 5), ('Party', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 2), ('Region', 0), ('Product', 0), ('YearsOwned', 1), ('UsingAccounting', 1), ('UsingBackGroundChecks', 1), ('UsingCheckin', 1), ('UsingMobileCheckin', 1), ('UsingMinistrySmart', 1), ('UsingRefreshWebsites', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 11), ('Party', 1), ('TWA_grouped', 2), ('CongregantUsers_grouped', 0), ('Region', 1), ('Product', 1), ('YearsOwned', 0), ('UsingAccounting', 0), ('UsingBackGroundChecks', 0), ('UsingCheckin', 0), ('UsingMobileCheckin', 0), ('UsingMinistrySmart', 0), ('UsingRefreshWebsites', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'TWA_grouped': [0, 1, 2, 3], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'Product': [0, 1, 2, 3], 'Region': [0, 1, 2, 3, 4], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'UsingOnlineGiving': [0, 1], 'UsingPathways': [0, 1], 'UsingCheckin': [0, 1], 'UsingMissionInsite': [0, 1], 'UsingAccounting': [0, 1], 'UsingMinistrySmart': [0, 1], 'UsingMobileCheckin': [0, 1], 'UsingBackGroundChecks': [0, 1], 'UsingRefreshWebsites': [0], 'CongregantUsers_grouped': [0, 1, 2, 3, 4]}
+
+
+
+
+
+###################################################      fluffy_deep      2022-06-20 15:40:13.205695      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.91347
+Standard Deviation : 0.01266
+Accuracy without "false negatives" : 0.96205
+Standard Deviation without "false negatives" : 0.00755
+Execution Time : 7.41 minutes
+The network was queried 6530 times.  FastQuery saved 1558 redundant queries.
+Error count : 1
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'TWA_grouped', 'CongregantUsers_grouped', 'MissingValues', 'Product', 'YearsOwned', 'UsingAccounting', 'UsingBackGroundChecks', 'UsingCheckin', 'UsingMobileCheckin', 'UsingMinistrySmart', 'UsingRefreshWebsites', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'MissingValues'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'UsingBackGroundChecks'), ('Satisfied', 'UsingCheckin'), ('Satisfied', 'UsingMobileCheckin'), ('Satisfied', 'UsingMinistrySmart'), ('Satisfied', 'UsingRefreshWebsites'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Satisfied', 'CongregantUsers_grouped'), ('Party', 'Satisfied'), ('TWA_grouped', 'Satisfied'), ('TWA_grouped', 'CongregantUsers_grouped'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 4), ('Party', 0), ('TWA_grouped', 0), ('CongregantUsers_grouped', 2), ('MissingValues', 1), ('Product', 0), ('YearsOwned', 1), ('UsingAccounting', 1), ('UsingBackGroundChecks', 1), ('UsingCheckin', 1), ('UsingMobileCheckin', 1), ('UsingMinistrySmart', 1), ('UsingRefreshWebsites', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 12), ('Party', 1), ('TWA_grouped', 2), ('CongregantUsers_grouped', 0), ('MissingValues', 0), ('Product', 1), ('YearsOwned', 0), ('UsingAccounting', 0), ('UsingBackGroundChecks', 0), ('UsingCheckin', 0), ('UsingMobileCheckin', 0), ('UsingMinistrySmart', 0), ('UsingRefreshWebsites', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2], 'Product': [0, 1, 2, 3], 'TWA_grouped': [0, 1, 2, 3], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'UsingPathways': [0, 1], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'UsingBackGroundChecks': [0, 1], 'UsingCheckin': [0, 1], 'UsingOnlineGiving': [0, 1], 'UsingMissionInsite': [0, 1], 'UsingMinistrySmart': [0, 1], 'UsingMobileCheckin': [0, 1], 'UsingRefreshWebsites': [0], 'UsingAccounting': [0, 1]}
+
+
+
+
+
+###################################################      alienated_private      2022-06-20 15:46:46.035563      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.86449
+Standard Deviation : 0.01012
+Accuracy without "false negatives" : 0.89513
+Standard Deviation without "false negatives" : 0.00697
+Execution Time : 4.55 minutes
+The network was queried 7061 times.  FastQuery saved 1027 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'State_cleaned', 'Product', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('State_cleaned', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('State_cleaned', 0), ('Product', 0), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 4), ('State_cleaned', 1), ('Product', 1), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'UsingOnlineGiving': [0, 1], 'Satisfied': [0, 1], 'Product': [0, 1, 2, 3], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'UsingMissionInsite': [0, 1], 'UsingPathways': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'State_cleaned': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]}
+
+
+
+
+
+###################################################      powerless_wait      2022-06-20 15:54:36.986603      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.87067
+Standard Deviation : 0.01134
+Accuracy without "false negatives" : 0.88947
+Standard Deviation without "false negatives" : 0.01005
+Execution Time : 2.24 minutes
+The network was queried 4292 times.  FastQuery saved 3796 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Party', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('Product', 0), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 4), ('Party', 1), ('Product', 1), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'YearsOwned': [0, 1, 2, 3, 4, 5], 'Satisfied': [0, 1], 'UsingPathways': [0, 1], 'UsingOnlineGiving': [0, 1], 'UsingMissionInsite': [0, 1], 'Product': [0, 1, 2, 3], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Party': [0, 1, 2]}
+
+
+
+
+
+###################################################      lasting_cousin      2022-06-20 16:06:08.560008      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.9158
+Standard Deviation : 0.01328
+Accuracy without "false negatives" : 0.96305
+Standard Deviation without "false negatives" : 0.0068
+Execution Time : 4.71 minutes
+The network was queried 6530 times.  FastQuery saved 1558 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'MissingValues', 'YearsOwned', 'UsingAccounting', 'UsingBackGroundChecks', 'UsingCheckin', 'UsingMobileCheckin', 'UsingMinistrySmart', 'UsingRefreshWebsites', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite', 'CongregantUsers_grouped', 'Party', 'TWA_grouped', 'Product']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'MissingValues'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'UsingBackGroundChecks'), ('Satisfied', 'UsingCheckin'), ('Satisfied', 'UsingMobileCheckin'), ('Satisfied', 'UsingMinistrySmart'), ('Satisfied', 'UsingRefreshWebsites'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Satisfied', 'CongregantUsers_grouped'), ('Satisfied', 'Product'), ('Party', 'Satisfied'), ('TWA_grouped', 'Satisfied'), ('TWA_grouped', 'CongregantUsers_grouped')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('MissingValues', 1), ('YearsOwned', 1), ('UsingAccounting', 1), ('UsingBackGroundChecks', 1), ('UsingCheckin', 1), ('UsingMobileCheckin', 1), ('UsingMinistrySmart', 1), ('UsingRefreshWebsites', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1), ('CongregantUsers_grouped', 2), ('Party', 0), ('TWA_grouped', 0), ('Product', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 13), ('MissingValues', 0), ('YearsOwned', 0), ('UsingAccounting', 0), ('UsingBackGroundChecks', 0), ('UsingCheckin', 0), ('UsingMobileCheckin', 0), ('UsingMinistrySmart', 0), ('UsingRefreshWebsites', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0), ('CongregantUsers_grouped', 0), ('Party', 1), ('TWA_grouped', 2), ('Product', 0)]
+States : {'UsingBackGroundChecks': [0, 1], 'Satisfied': [0, 1], 'UsingMobileCheckin': [0, 1], 'Party': [0, 1, 2], 'UsingRefreshWebsites': [0], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'UsingAccounting': [0, 1], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'TWA_grouped': [0, 1, 2, 3], 'UsingMinistrySmart': [0, 1], 'UsingPathways': [0, 1], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'UsingMissionInsite': [0, 1], 'UsingOnlineGiving': [0, 1], 'Product': [0, 1, 2, 3], 'UsingCheckin': [0, 1]}
+
+
+
+
+
+###################################################            2022-06-20 16:37:25.089573      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : uniform
+Prediction Accuracy : 0.57154
+Standard Deviation : 0.36159
+Accuracy without "false negatives" : 0.91999
+Standard Deviation without "false negatives" : 0.06564
+Execution Time : 0.03 minutes
+The network was queried 0 times.  FastQuery saved 8088 redundant queries.
+Error count : 0
+
+
+###################################################            2022-06-20 16:40:07.325118      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : uniform
+Prediction Accuracy : 0.57154
+Standard Deviation : 0.36159
+Accuracy without "false negatives" : 0.91999
+Standard Deviation without "false negatives" : 0.06564
+Execution Time : 0.03 minutes
+The network was queried 0 times.  FastQuery saved 8088 redundant queries.
+Error count : 0
+predictions : [0, 0, 0, 1, 1, 1, 1, 0, 1, 1]
+
+###################################################            2022-06-20 16:40:22.549641      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : uniform
+Prediction Accuracy : 0.57154
+Standard Deviation : 0.36159
+Accuracy without "false negatives" : 0.91999
+Standard Deviation without "false negatives" : 0.06564
+Execution Time : 0.02 minutes
+The network was queried 0 times.  FastQuery saved 8088 redundant queries.
+Error count : 0
+predictions : [0, 0, 0, 1, 1, 1, 1, 0, 1, 1]
+
+###################################################      disloyal_flight      2022-06-20 17:59:29.953659      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.89045
+Standard Deviation : 0.01042
+Accuracy without "false negatives" : 0.891
+Standard Deviation without "false negatives" : 0.01017
+Execution Time : 2.72 minutes
+The network was queried 4866 times.  FastQuery saved 3222 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'CongregantUsers_grouped', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'CongregantUsers_grouped'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Party', 'Satisfied'), ('Product', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 3), ('Party', 0), ('Product', 0), ('CongregantUsers_grouped', 1), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('Party', 1), ('Product', 1), ('CongregantUsers_grouped', 0), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'UsingPathways': [0, 1], 'Satisfied': [0, 1], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'Party': [0, 1, 2], 'UsingOnlineGiving': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'Product': [0, 1, 2, 3], 'UsingMissionInsite': [0, 1], 'CongregantUsers_grouped': [0, 1, 2, 3, 4]}
+
+
+
+
+
+###################################################      stimulating_shirt      2022-06-20 18:07:42.517501      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.93348
+Standard Deviation : 0.01112
+Accuracy without "false negatives" : 0.95293
+Standard Deviation without "false negatives" : 0.00699
+Execution Time : 7.25 minutes
+The network was queried 5169 times.  FastQuery saved 2919 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'MissingValues', 'CongregantUsers_grouped', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'CongregantUsers_grouped'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Party', 'Satisfied'), ('Product', 'Satisfied'), ('MissingValues', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 4), ('Party', 0), ('Product', 0), ('MissingValues', 0), ('CongregantUsers_grouped', 1), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 5), ('Party', 1), ('Product', 1), ('MissingValues', 1), ('CongregantUsers_grouped', 0), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'UsingMissionInsite': [0, 1], 'Satisfied': [0, 1], 'UsingOnlineGiving': [0, 1], 'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'UsingPathways': [0, 1], 'Party': [0, 1, 2], 'Product': [0, 1, 2, 3], 'YearsOwned': [0, 1, 2, 3, 4, 5]}
+
+
+
+
+
+###################################################      serene_football      2022-06-20 18:08:04.211665      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.90603
+Standard Deviation : 0.00899
+Accuracy without "false negatives" : 0.93351
+Standard Deviation without "false negatives" : 0.00517
+Execution Time : 19.03 minutes
+The network was queried 7324 times.  FastQuery saved 764 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'State_cleaned', 'Product', 'MissingValues', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('State_cleaned', 'Satisfied'), ('Product', 'Satisfied'), ('MissingValues', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 4), ('State_cleaned', 0), ('Product', 0), ('MissingValues', 0), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 4), ('State_cleaned', 1), ('Product', 1), ('MissingValues', 1), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'UsingMissionInsite': [0, 1], 'Satisfied': [0, 1], 'Product': [0, 1, 2, 3], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'State_cleaned': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], 'UsingOnlineGiving': [0, 1], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'UsingPathways': [0, 1]}
+
+
+
+
+
+###################################################      unhappy_inside      2022-06-20 18:11:26.657448      >20 MissingValues dropped!!!   ##################################################
+
+Method Used : <class 'pgmpy.inference.ExactInference.VariableElimination'>
+Prediction Accuracy : 0.92211
+Standard Deviation : 0.01001
+Accuracy without "false negatives" : 0.95799
+Standard Deviation without "false negatives" : 0.00656
+Execution Time : 8.74 minutes
+The network was queried 5829 times.  FastQuery saved 2259 redundant queries.
+Error count : 0
+Nodes : ['DenominationalGroup', 'Satisfied', 'Party', 'Product', 'MissingValues', 'UsingAccounting', 'CongregantUsers_grouped', 'YearsOwned', 'UsingOnlineGiving', 'UsingPathways', 'UsingMissionInsite']
+Edges : [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'UsingAccounting'), ('Satisfied', 'CongregantUsers_grouped'), ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'), ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'), ('Party', 'Satisfied'), ('Product', 'Satisfied'), ('MissingValues', 'Satisfied')]
+In Degree : [('DenominationalGroup', 0), ('Satisfied', 4), ('Party', 0), ('Product', 0), ('MissingValues', 0), ('UsingAccounting', 1), ('CongregantUsers_grouped', 1), ('YearsOwned', 1), ('UsingOnlineGiving', 1), ('UsingPathways', 1), ('UsingMissionInsite', 1)]
+Out Degree : [('DenominationalGroup', 1), ('Satisfied', 6), ('Party', 1), ('Product', 1), ('MissingValues', 1), ('UsingAccounting', 0), ('CongregantUsers_grouped', 0), ('YearsOwned', 0), ('UsingOnlineGiving', 0), ('UsingPathways', 0), ('UsingMissionInsite', 0)]
+States : {'CongregantUsers_grouped': [0, 1, 2, 3, 4], 'Satisfied': [0, 1], 'DenominationalGroup': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], 'UsingOnlineGiving': [0, 1], 'MissingValues': [0, 1, 2, 3, 4, 5, 6, 7, 8], 'Party': [0, 1, 2], 'Product': [0, 1, 2, 3], 'UsingMissionInsite': [0, 1], 'UsingPathways': [0, 1], 'YearsOwned': [0, 1, 2, 3, 4, 5], 'UsingAccounting': [0, 1]}
+
+
+

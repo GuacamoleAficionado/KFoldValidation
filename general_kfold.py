@@ -63,21 +63,14 @@ bayesian_networks = []
 for i in range(K):
     bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
                                       ('Party', 'Satisfied'),
-                                      ('TWA_grouped', 'Satisfied'),
-                                      ('TWA_grouped', 'CongregantUsers_grouped'),
-                                      ('Region', 'Satisfied'),
                                       ('Product', 'Satisfied'),
-                                      ('Satisfied', 'YearsOwned'),
+                                      ('MissingValues', 'Satisfied'),
                                       ('Satisfied', 'UsingAccounting'),
-                                      ('Satisfied', 'UsingBackGroundChecks'),
-                                      ('Satisfied', 'UsingCheckin'),
-                                      ('Satisfied', 'UsingMobileCheckin'),
-                                      ('Satisfied', 'UsingMinistrySmart'),
-                                      ('Satisfied', 'UsingRefreshWebsites'),
+                                      ('Satisfied', 'CongregantUsers_grouped'),
+                                      ('Satisfied', 'YearsOwned'),
                                       ('Satisfied', 'UsingOnlineGiving'),
                                       ('Satisfied', 'UsingPathways'),
-                                      ('Satisfied', 'UsingMissionInsite'),
-                                      ('Satisfied', 'CongregantUsers_grouped'),
+                                      ('Satisfied', 'UsingMissionInsite')
                                       ])
 
     # bn.check_model()
