@@ -108,18 +108,17 @@ for i in range(K):
     for j in range(test_group_sizes[i]):
         #  'state_instantiation' is a Series from which we can obtain the instantiated state variables.
         state_instantiation = test_groups[i].iloc[j][environment_variables]
-
-        #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
+        #  'client_ID is the ID in the dataset of the row we are currently investigating
         client_ID = test_groups[i].iloc[j]['ID']
+        #  'prediction' is the max likelihood state of the target variable given the states of the other variables.
         prediction = fq[i].loc[tuple(state_instantiation.values)]['0_y']
         #  'actual_target_value' is the true value of the state variable we are trying to predict.
         actual_target_value = test_groups[i].iloc[j][TARGET_VARIABLE]
         try:
+            validation.append((prediction > .5) == actual_target_value)
             if (prediction < .60) and (prediction > .5) and actual_target_value:
                 moderate_risk_group.append((client_ID, prediction))
-            validation.append((prediction > .5) == actual_target_value)
-            if not (round(prediction)) and actual_target_value:
-                # client_ID - ID in data set of client about whom we are making a prediction.
+            elif not (round(prediction)) and actual_target_value:
                 false_negative_lst.append(client_ID)
                 high_risk_group.append((client_ID, prediction))
         except (ValueError, TypeError) as e:

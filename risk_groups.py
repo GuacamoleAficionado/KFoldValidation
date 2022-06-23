@@ -75,7 +75,7 @@ for i in range(len(df)):
     try:
         if (prediction < .60) and (prediction > .5) and actual_target_value:
             moderate_risk_group.append((client_ID, prediction))
-        if not (round(prediction)) and actual_target_value:
+        elif not (round(prediction)) and actual_target_value:
             # client_ID - ID in data set of client about whom we are making a prediction.
             high_risk_group.append((client_ID, prediction))
     except (ValueError, TypeError) as e:
