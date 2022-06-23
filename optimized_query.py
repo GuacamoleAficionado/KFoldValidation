@@ -4,6 +4,8 @@ Email        :    zseiss2997@g.fmarion.edu
 Written      :    June 4, 2022
 Last Update  :    June 18, 2022
 """
+import sys
+
 import pandas as pd
 import copy
 from tqdm import tqdm
@@ -45,7 +47,7 @@ def fast_query(bns: list, test_grp_indexes, environment_variables: list, data_fr
     quick_lookup_tables = []
     error_count = 0
     for i in range(len(inferences)):
-        df = data_frame.iloc[test_grp_indexes[i]]
+        df = data_frame.iloc[test_grp_indexes]
         groupby = df.groupby(environment_variables[:-1])[environment_variables[-1]]
         multi_index = groupby.value_counts().index
         query_evidence_table = pd.DataFrame(multi_index)

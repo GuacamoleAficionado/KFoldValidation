@@ -48,6 +48,7 @@ We get a list of the training group indexes by removing the
 indexes associated with the ith testing group from the list of indices of
 the full data set
 '''
+
 # train_group_indexes is an array of length k which contains the index for each training group
 train_group_indexes = [sample_index.drop(test_group_indexes[i]) for i in range(K)]
 training_groups = [df.iloc[train_group_indexes[i]] for i in range(K)]
@@ -61,19 +62,11 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
-                                      ('Party', 'Satisfied'),
-                                      ('Product', 'Satisfied'),
-                                      ('MissingValues', 'Satisfied'),
-                                      ('Satisfied', 'UsingAccounting'),
-                                      ('Satisfied', 'CongregantUsers_grouped'),
-                                      ('Satisfied', 'YearsOwned'),
-                                      ('Satisfied', 'UsingOnlineGiving'),
-                                      ('Satisfied', 'UsingPathways'),
-                                      ('Satisfied', 'UsingMissionInsite')
-                                      ])
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'CongregantUsers_grouped'),
+                                      ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'),
+                                      ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'),
+                                      ('Party', 'Satisfied'), ('Product', 'Satisfied'), ('MissingValues', 'Satisfied')])
 
-    # bn.check_model()
     bayesian_networks.append(bn)
 
 '''
@@ -129,12 +122,8 @@ for i in range(K):
                 # client_ID - ID in data set of client about whom we are making a prediction.
                 false_negative_lst.append(client_ID)
                 high_risk_group.append((client_ID, prediction))
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             error_count += 1
-            print(e)
-        except TypeError as e:
-            error_count += 1
-            print(prediction)
             print(e)
     false_negatives.append(false_negative_lst)
     validations.append(np.array(validation))
