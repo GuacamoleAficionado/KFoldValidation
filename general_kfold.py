@@ -20,7 +20,7 @@ begin = time()
 
 random.seed(0)
 DROP_CUTOFF = 20
-df = pd.read_csv('ACST_Cust_Data.csv')
+df = pd.read_csv('/media/zach/MULTIBOOT/ACS/ACST_Cust_Data.csv')
 df = df.loc[df['MissingValues'] <= DROP_CUTOFF].reset_index()
 K = 10
 NUM_ROWS = len(df)
@@ -62,11 +62,15 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'), ('Satisfied', 'CongregantUsers_grouped'),
-                                      ('Satisfied', 'YearsOwned'), ('Satisfied', 'UsingOnlineGiving'),
-                                      ('Satisfied', 'UsingPathways'), ('Satisfied', 'UsingMissionInsite'),
-                                      ('Party', 'Satisfied'), ('Product', 'Satisfied'), ('MissingValues', 'Satisfied')])
-
+    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
+                                      ('Party', 'Satisfied'),
+                                      ('MissingValues', 'Satisfied'),
+                                      ('Product', 'Satisfied'),
+                                      ('Satisfied', 'CongregantUsers_grouped'),
+                                      ('Satisfied', 'YearsOwned'),
+                                      ('Satisfied', 'UsingMissionInsite'),
+                                      ('Satisfied', 'UsingOnlineGiving'),
+                                      ('Satisfied', 'UsingPathways')])
     bayesian_networks.append(bn)
 
 '''
@@ -87,10 +91,6 @@ map and map the queries to their respective outputs, reducing computation time b
 eliminating repeat calculations.
 '''
 
-# num_queries=0
-# method_used='uniform'
-# external_errors=0
-# file_name=''
 fq, num_queries, method_used, external_errors = fast_query(bayesian_networks,
                                                            test_group_indexes,
                                                            environment_variables,
@@ -118,7 +118,7 @@ for i in range(K):
             validation.append((prediction > .5) == actual_target_value)
             if (prediction < .60) and (prediction > .5) and actual_target_value:
                 moderate_risk_group.append((client_ID, prediction))
-            elif not (round(prediction)) and actual_target_value:
+            elif not round(prediction) and actual_target_value:
                 false_negative_lst.append(client_ID)
                 high_risk_group.append((client_ID, prediction))
         except (ValueError, TypeError) as e:

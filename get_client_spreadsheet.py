@@ -4,7 +4,7 @@ from funnynames import get_random_file_name
 
 
 def return_client_csv(high_risk_lst: list, moderate_risk_lst: list, data_frame: pd.DataFrame):
-    parent_directory = 'risk_spreadsheets/'
+    parent_directory = 'Client_Spreadsheets/'
     while True:
         try:
             directory = get_random_file_name()
@@ -37,7 +37,7 @@ def return_client_csv(high_risk_lst: list, moderate_risk_lst: list, data_frame: 
         for index in row_indexes:
             high_risk_df.loc[index, 'Probability_Satisfied'] = high_risk_lst[i][1]
 
-    save_path = 'risk_spreadsheets/' + directory
+    save_path = 'Client_Spreadsheets/' + directory
     file_name_1 = directory + '_moderate_risk_group.csv'
     file_name_2 = directory + '_high_risk_group.csv'
     complete_name_1 = os.path.join(save_path, file_name_1)
