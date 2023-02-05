@@ -62,15 +62,15 @@ of the associated testing group and compare its max likelihood prediction agains
 '''
 bayesian_networks = []
 for i in range(K):
-    bn = make_bn(training_groups[i], [('DenominationalGroup', 'Satisfied'),
-                                      ('Party', 'Satisfied'),
-                                      ('MissingValues', 'Satisfied'),
-                                      ('Product', 'Satisfied'),
-                                      ('Satisfied', 'CongregantUsers_grouped'),
-                                      ('Satisfied', 'YearsOwned'),
-                                      ('Satisfied', 'UsingMissionInsite'),
-                                      ('Satisfied', 'UsingOnlineGiving'),
-                                      ('Satisfied', 'UsingPathways')])
+    bn = make_bn(training_groups[i], [('Var1', 'Target'),
+                                      ('Var2', 'Target'),
+                                      ('MissingValues', 'Target'),
+                                      ('Product', 'Target'),
+                                      ('Target', 'Var3_grouped'),
+                                      ('Target', 'Var4_grouped'),
+                                      ('Target', 'BinVar1'),
+                                      ('Target', 'BinVar2'),
+                                      ('Target', 'BinVar3')])
     bayesian_networks.append(bn)
 
 '''
