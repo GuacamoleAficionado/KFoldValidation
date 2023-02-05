@@ -26,26 +26,7 @@ index = list(range(len(df)))
 
 '''  AS CURRENTLY IMPLEMENTED, THIS PROGRAM WILL FAIL FOR LESS THAN 3 NODE BNs!!!!  
 '''
-bayesian_network = make_bn(df, [('DenominationalGroup', 'Satisfied'),
-                                ('Satisfied', 'CongregantUsers_grouped'),
-                                ('Satisfied', 'YearsOwned'),
-                                ('Satisfied', 'UsingOpenInvitationModel'),
-                                ('Satisfied', 'UsingMissionInsite'),
-                                ('Satisfied', 'UsingAccounting'),
-                                ('Satisfied', 'UsingOnlineGiving'),
-                                ('Satisfied', 'UsingBackGroundChecks'),
-                                ('Satisfied', 'UsingPathways'),
-                                ('Satisfied', 'UsingCheckin'),
-                                ('Satisfied', 'UsingMobileCheckin'),
-                                ('Satisfied', 'UsingMinistrySmart'),
-                                ('Satisfied', 'UsingRefreshWebsites'),
-                                ('Party', 'Satisfied'),
-                                ('Product', 'Satisfied'),
-                                ('MissingValues', 'Satisfied'),
-                                ('Region', 'Satisfied'),
-                                ('TWA_grouped', 'Satisfied'),
-                                ('TWA_grouped', 'CongregantUsers_grouped')])
-
+bayesian_network = make_bn(df, [])
 environment_variables = [variable for variable in bayesian_network]
 environment_variables.remove(TARGET_VARIABLE)
 
