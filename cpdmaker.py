@@ -113,8 +113,7 @@ def make_cpd(data_frame, target, *givens):
     return cpt
 
 
-#  Example ___________________________________________________________________
-
-# data = pd.read_csv('ACST_Cust_Data.csv')
-# my_cpd = make_cpd(data, 'TWA_grouped')
-# print(my_cpd)
+if __name__ == "__main__":
+     data = pd.read_csv('ACST_Cust_Data.csv')
+     my_cpd = make_cpd(data, 'TWA_grouped')
+     print(my_cpd)
